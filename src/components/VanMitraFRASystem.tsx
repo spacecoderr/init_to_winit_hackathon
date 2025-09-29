@@ -1,4 +1,4 @@
-"use client";
+"use client"
 import React, { useState } from 'react';
 import { MapPin, FileText, CheckCircle, Clock, AlertCircle, Upload, Search, Filter, ChevronRight, Layers, TrendingUp, Droplets, Cloud, Users, Brain, Target, Zap, Database, ChevronDown, Info, Award } from 'lucide-react';
 
@@ -9,6 +9,10 @@ const VanMitraFRASystem = () => {
   const [selectedVillage, setSelectedVillage] = useState(null);
   const [ragResults, setRagResults] = useState(null);
   const [analyzing, setAnalyzing] = useState(false);
+  const [uploadModalOpen, setUploadModalOpen] = useState(false);
+  const [uploadedFile, setUploadedFile] = useState(null);
+  const [ocrProcessing, setOcrProcessing] = useState(false);
+  const [extractedData, setExtractedData] = useState(null);
 
   // RAG Knowledge Base - Scheme Information
   const schemeKnowledgeBase = {
@@ -397,6 +401,148 @@ const VanMitraFRASystem = () => {
     alert(`Additional information requested for Claim ${claimId}`);
   };
 
+  // OCR and NER Processing Function
+  const handleFileUpload = async (event) => {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    setUploadedFile(file);
+    setOcrProcessing(true);
+
+    // Simulate OCR processing (In production, use Tesseract.js or backend API)
+    setTimeout(async () => {
+      // Simulated OCR text extraction
+      const ocrText = `
+        FORM A - CLAIM FOR RIGHTS TO FOREST LAND
+        
+        Name of Claimant: Rajesh Kumar Singh
+        Father's Name: Ram Prasad Singh
+        Village: Kakraban
+        Gram Sabha: Kakraban Panchayat
+        Tehsil: Khowai
+        District: Tripura
+        
+        Patta Number: IFR-Tri-Khowai-2025-0022
+        
+        Nature of Right: Individual Forest Right
+        Extent of Land: 3.5 hectares
+        Location: Survey No. 245/2, Kakraban Forest
+        Coordinates: 23.4567° N, 78.9234° E
+        
+        Date of Occupation: Before December 2005
+        Purpose: Cultivation and Minor Forest Produce Collection
+        
+        Supporting Documents:
+        - Ration Card Number: TRP/KKB/2015/456789
+        - Voter ID: TRP1234567
+        - Land Revenue Records
+        - Witness Statements
+        
+        Date of Application: 15th September 2025
+        Signature: [Signature]
+      `;
+
+      // Simulated NER (Named Entity Recognition)
+      // In production, use spaCy, BERT-NER, or cloud APIs like Google NLP, AWS Comprehend
+      const nerExtraction = performNER(ocrText);
+
+      setExtractedData(nerExtraction);
+      setOcrProcessing(false);
+    }, 3000); // Simulate 3 second processing time
+  };
+
+  // Simple NER function (rule-based for demonstration)
+  // In production, replace with ML model like BERT-NER or spaCy
+  const performNER = (text) => {
+    const extracted = {
+      claimantName: '',
+      fatherName: '',
+      village: '',
+      pattaNumber: '',
+      extent: '',
+      coordinates: { lat: '', lng: '' },
+      surveyNumber: '',
+      documents: [],
+      dateOfOccupation: '',
+      confidence: {}
+    };
+
+    // Name extraction
+    const nameMatch = text.match(/Name of Claimant:\s*([^\n]+)/i);
+    if (nameMatch) {
+      extracted.claimantName = nameMatch[1].trim();
+      extracted.confidence.name = 95;
+    }
+
+    // Father's name
+    const fatherMatch = text.match(/Father's Name:\s*([^\n]+)/i);
+    if (fatherMatch) {
+      extracted.fatherName = fatherMatch[1].trim();
+      extracted.confidence.fatherName = 92;
+    }
+
+    // Village
+    const villageMatch = text.match(/Village:\s*([^\n]+)/i);
+    if (villageMatch) {
+      extracted.village = villageMatch[1].trim();
+      extracted.confidence.village = 98;
+    }
+
+    // Patta Number
+    const pattaMatch = text.match(/Patta Number:\s*([^\n]+)/i);
+    if (pattaMatch) {
+      extracted.pattaNumber = pattaMatch[1].trim();
+      extracted.confidence.pattaNumber = 100;
+    }
+
+    // Extent
+    const extentMatch = text.match(/Extent of Land:\s*([\d.]+)\s*hectares?/i);
+    if (extentMatch) {
+      extracted.extent = parseFloat(extentMatch[1]);
+      extracted.confidence.extent = 97;
+    }
+
+    // Coordinates
+    const coordMatch = text.match(/Coordinates:\s*([\d.]+)°\s*N,\s*([\d.]+)°\s*E/i);
+    if (coordMatch) {
+      extracted.coordinates.lat = parseFloat(coordMatch[1]);
+      extracted.coordinates.lng = parseFloat(coordMatch[2]);
+      extracted.confidence.coordinates = 94;
+    }
+
+    // Survey Number
+    const surveyMatch = text.match(/Survey No[.:]\s*([^\n,]+)/i);
+    if (surveyMatch) {
+      extracted.surveyNumber = surveyMatch[1].trim();
+      extracted.confidence.surveyNumber = 90;
+    }
+
+    // Documents
+    if (text.includes('Ration Card')) extracted.documents.push('Ration Card');
+    if (text.includes('Voter ID')) extracted.documents.push('Voter ID');
+    if (text.includes('Land Revenue')) extracted.documents.push('Land Revenue Records');
+    if (text.includes('Witness')) extracted.documents.push('Witness Statements');
+
+    // Date of occupation
+    const dateMatch = text.match(/Date of Occupation:\s*([^\n]+)/i);
+    if (dateMatch) {
+      extracted.dateOfOccupation = dateMatch[1].trim();
+      extracted.confidence.dateOfOccupation = 88;
+    }
+
+    return extracted;
+  };
+
+  const saveExtractedClaim = () => {
+    if (!extractedData) return;
+
+    alert(`Claim saved successfully!\n\nClaimant: ${extractedData.claimantName}\nVillage: ${extractedData.village}\nExtent: ${extractedData.extent} hectares`);
+    
+    setUploadModalOpen(false);
+    setUploadedFile(null);
+    setExtractedData(null);
+  };
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
@@ -417,7 +563,9 @@ const VanMitraFRASystem = () => {
                 <Brain className="w-4 h-4" />
                 <span className="text-sm font-medium">RAG-Powered AI</span>
               </div>
-              <button className="bg-white text-green-700 px-4 py-2 rounded-lg font-medium hover:bg-green-50 transition flex items-center space-x-2">
+              <button className="bg-white text-green-700 px-4 py-2 rounded-lg font-medium hover:bg-green-50 transition flex items-center space-x-2"
+                onClick={() => setUploadModalOpen(true)}
+              >
                 <Upload className="w-4 h-4" />
                 <span>Upload Claim</span>
               </button>
@@ -1103,6 +1251,237 @@ const VanMitraFRASystem = () => {
                   <span>Approve Claim</span>
                 </button>
               </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Upload Claim Modal with OCR & NER */}
+      {uploadModalOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+          <div className="bg-white rounded-xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+            <div className="p-6 border-b bg-gradient-to-r from-blue-600 to-purple-600 text-white">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h2 className="text-2xl font-bold">Upload & Process Claim Document</h2>
+                  <p className="text-blue-100 mt-1">AI-powered OCR + NER for automatic data extraction</p>
+                </div>
+                <button
+                  onClick={() => {
+                    setUploadModalOpen(false);
+                    setUploadedFile(null);
+                    setExtractedData(null);
+                  }}
+                  className="text-white hover:bg-white hover:bg-opacity-20 p-2 rounded-lg transition"
+                >
+                  ✕
+                </button>
+              </div>
+            </div>
+
+            <div className="p-6 space-y-6">
+              {!uploadedFile && (
+                <div className="border-2 border-dashed border-gray-300 rounded-xl p-12 text-center hover:border-blue-500 transition">
+                  <input
+                    type="file"
+                    id="file-upload"
+                    accept="image/*,.pdf"
+                    onChange={handleFileUpload}
+                    className="hidden"
+                  />
+                  <label htmlFor="file-upload" className="cursor-pointer">
+                    <Upload className="w-16 h-16 text-gray-400 mx-auto mb-4" />
+                    <h3 className="text-lg font-bold text-gray-900 mb-2">Upload Claim Document</h3>
+                    <p className="text-sm text-gray-600 mb-4">
+                      Supported formats: JPG, PNG, PDF (Form A, Land Records, etc.)
+                    </p>
+                    <div className="inline-block bg-blue-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-blue-700 transition">
+                      Choose File
+                    </div>
+                  </label>
+                </div>
+              )}
+
+              {ocrProcessing && (
+                <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl p-12 text-center border-2 border-blue-200">
+                  <div className="inline-block animate-spin rounded-full h-16 w-16 border-b-2 border-blue-600 mb-4"></div>
+                  <h3 className="text-xl font-bold text-gray-900 mb-2">AI Processing Document</h3>
+                  <div className="space-y-2 text-sm text-gray-700">
+                    <p className="flex items-center justify-center space-x-2">
+                      <CheckCircle className="w-4 h-4 text-green-600" />
+                      <span>Step 1: OCR Text Extraction - In Progress...</span>
+                    </p>
+                    <p className="flex items-center justify-center space-x-2 text-gray-400">
+                      <Clock className="w-4 h-4" />
+                      <span>Step 2: Named Entity Recognition (NER) - Waiting...</span>
+                    </p>
+                    <p className="flex items-center justify-center space-x-2 text-gray-400">
+                      <Clock className="w-4 h-4" />
+                      <span>Step 3: Data Validation - Waiting...</span>
+                    </p>
+                  </div>
+                </div>
+              )}
+
+              {extractedData && !ocrProcessing && (
+                <div className="space-y-6">
+                  <div className="bg-green-50 border-2 border-green-200 rounded-xl p-6">
+                    <div className="flex items-center space-x-3 mb-3">
+                      <CheckCircle className="w-6 h-6 text-green-600" />
+                      <h3 className="text-lg font-bold text-green-900">Data Extraction Complete!</h3>
+                    </div>
+                    <p className="text-sm text-green-800">
+                      AI has successfully extracted and validated the following information. Please review and confirm.
+                    </p>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="bg-white border-2 border-gray-200 rounded-lg p-4">
+                      <div className="flex items-center justify-between mb-2">
+                        <p className="text-sm font-medium text-gray-600">Claimant Name</p>
+                        <span className="text-xs font-bold text-green-600">
+                          {extractedData.confidence.name}% confidence
+                        </span>
+                      </div>
+                      <p className="font-bold text-gray-900 text-lg">{extractedData.claimantName}</p>
+                      <div className="w-full bg-gray-200 rounded-full h-1 mt-2">
+                        <div
+                          className="bg-green-500 h-1 rounded-full"
+                          style={{ width: `${extractedData.confidence.name}%` }}
+                        />
+                      </div>
+                    </div>
+
+                    <div className="bg-white border-2 border-gray-200 rounded-lg p-4">
+                      <div className="flex items-center justify-between mb-2">
+                        <p className="text-sm font-medium text-gray-600">Father's Name</p>
+                        <span className="text-xs font-bold text-green-600">
+                          {extractedData.confidence.fatherName}% confidence
+                        </span>
+                      </div>
+                      <p className="font-bold text-gray-900 text-lg">{extractedData.fatherName}</p>
+                      <div className="w-full bg-gray-200 rounded-full h-1 mt-2">
+                        <div
+                          className="bg-green-500 h-1 rounded-full"
+                          style={{ width: `${extractedData.confidence.fatherName}%` }}
+                        />
+                      </div>
+                    </div>
+
+                    <div className="bg-white border-2 border-gray-200 rounded-lg p-4">
+                      <div className="flex items-center justify-between mb-2">
+                        <p className="text-sm font-medium text-gray-600">Village</p>
+                        <span className="text-xs font-bold text-green-600">
+                          {extractedData.confidence.village}% confidence
+                        </span>
+                      </div>
+                      <p className="font-bold text-gray-900 text-lg">{extractedData.village}</p>
+                      <div className="w-full bg-gray-200 rounded-full h-1 mt-2">
+                        <div
+                          className="bg-green-500 h-1 rounded-full"
+                          style={{ width: `${extractedData.confidence.village}%` }}
+                        />
+                      </div>
+                    </div>
+
+                    <div className="bg-white border-2 border-gray-200 rounded-lg p-4">
+                      <div className="flex items-center justify-between mb-2">
+                        <p className="text-sm font-medium text-gray-600">Patta Number</p>
+                        <span className="text-xs font-bold text-green-600">
+                          {extractedData.confidence.pattaNumber}% confidence
+                        </span>
+                      </div>
+                      <p className="font-bold text-gray-900 text-lg">{extractedData.pattaNumber}</p>
+                      <div className="w-full bg-gray-200 rounded-full h-1 mt-2">
+                        <div
+                          className="bg-green-500 h-1 rounded-full"
+                          style={{ width: `${extractedData.confidence.pattaNumber}%` }}
+                        />
+                      </div>
+                    </div>
+
+                    <div className="bg-white border-2 border-gray-200 rounded-lg p-4">
+                      <div className="flex items-center justify-between mb-2">
+                        <p className="text-sm font-medium text-gray-600">Extent (Hectares)</p>
+                        <span className="text-xs font-bold text-green-600">
+                          {extractedData.confidence.extent}% confidence
+                        </span>
+                      </div>
+                      <p className="font-bold text-gray-900 text-lg">{extractedData.extent} ha</p>
+                      <div className="w-full bg-gray-200 rounded-full h-1 mt-2">
+                        <div
+                          className="bg-green-500 h-1 rounded-full"
+                          style={{ width: `${extractedData.confidence.extent}%` }}
+                        />
+                      </div>
+                    </div>
+
+                    <div className="bg-white border-2 border-gray-200 rounded-lg p-4">
+                      <div className="flex items-center justify-between mb-2">
+                        <p className="text-sm font-medium text-gray-600">Coordinates</p>
+                        <span className="text-xs font-bold text-green-600">
+                          {extractedData.confidence.coordinates}% confidence
+                        </span>
+                      </div>
+                      <p className="font-bold text-gray-900 text-lg">
+                        {extractedData.coordinates.lat}°N, {extractedData.coordinates.lng}°E
+                      </p>
+                      <div className="w-full bg-gray-200 rounded-full h-1 mt-2">
+                        <div
+                          className="bg-green-500 h-1 rounded-full"
+                          style={{ width: `${extractedData.confidence.coordinates}%` }}
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="bg-white border-2 border-gray-200 rounded-lg p-4">
+                    <p className="text-sm font-medium text-gray-600 mb-3">Extracted Documents</p>
+                    <div className="flex flex-wrap gap-2">
+                      {extractedData.documents.map((doc, idx) => (
+                        <span key={idx} className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm font-medium flex items-center space-x-1">
+                          <FileText className="w-3 h-3" />
+                          <span>{doc}</span>
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="bg-blue-50 border-2 border-blue-200 rounded-xl p-4">
+                    <div className="flex items-start space-x-3">
+                      <Info className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
+                      <div className="text-sm text-blue-800">
+                        <p className="font-bold mb-1">OCR + NER Technology Stack:</p>
+                        <ul className="space-y-1 text-xs">
+                          <li><strong>OCR Engine:</strong> Tesseract.js / Google Vision API / AWS Textract</li>
+                          <li><strong>NER Model:</strong> spaCy, BERT-NER, or Custom trained models</li>
+                          <li><strong>Cost:</strong> ~₹0.10 per document (using AWS Textract) or Free (Tesseract.js)</li>
+                          <li><strong>Accuracy:</strong> 85-95% depending on document quality</li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center justify-end space-x-3 pt-4 border-t">
+                    <button
+                      onClick={() => {
+                        setUploadedFile(null);
+                        setExtractedData(null);
+                      }}
+                      className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition font-medium"
+                    >
+                      Upload Another
+                    </button>
+                    <button
+                      onClick={saveExtractedClaim}
+                      className="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition font-medium flex items-center space-x-2"
+                    >
+                      <CheckCircle className="w-4 h-4" />
+                      <span>Save Claim Data</span>
+                    </button>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         </div>
