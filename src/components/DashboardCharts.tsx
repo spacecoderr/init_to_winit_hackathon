@@ -244,7 +244,7 @@ const DashboardCharts: React.FC<DashboardChartsProps> = ({ claims }) => {
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
       {/* Claims Trend Chart */}
-      <div 
+      <div
         className="col-span-1 lg:col-span-2 p-6 rounded-lg border"
         style={{ backgroundColor: 'var(--color-surface)', borderColor: 'var(--color-border)' }}
       >
@@ -260,7 +260,7 @@ const DashboardCharts: React.FC<DashboardChartsProps> = ({ claims }) => {
       </div>
 
       {/* Status Distribution */}
-      <div 
+      <div
         className="p-6 rounded-lg border"
         style={{ backgroundColor: 'var(--color-surface)', borderColor: 'var(--color-border)' }}
       >
@@ -276,7 +276,7 @@ const DashboardCharts: React.FC<DashboardChartsProps> = ({ claims }) => {
       </div>
 
       {/* Village Distribution */}
-      <div 
+      <div
         className="p-6 rounded-lg border"
         style={{ backgroundColor: 'var(--color-surface)', borderColor: 'var(--color-border)' }}
       >
@@ -292,7 +292,7 @@ const DashboardCharts: React.FC<DashboardChartsProps> = ({ claims }) => {
       </div>
 
       {/* Area Distribution */}
-      <div 
+      <div
         className="col-span-1 lg:col-span-2 p-6 rounded-lg border"
         style={{ backgroundColor: 'var(--color-surface)', borderColor: 'var(--color-border)' }}
       >
@@ -303,8 +303,8 @@ const DashboardCharts: React.FC<DashboardChartsProps> = ({ claims }) => {
           </h3>
         </div>
         <div className="h-64">
-          <Bar 
-            data={areaChartData} 
+          <Bar
+            data={areaChartData}
             options={{
               ...chartOptions,
               plugins: {
@@ -313,13 +313,13 @@ const DashboardCharts: React.FC<DashboardChartsProps> = ({ claims }) => {
                   display: false,
                 },
               },
-            }} 
+            }}
           />
         </div>
       </div>
 
       {/* Summary Statistics */}
-      <div 
+      <div
         className="col-span-1 lg:col-span-2 p-8 rounded-xl border-2 transition-all hover:shadow-lg"
         style={{ backgroundColor: 'var(--color-surface)', borderColor: 'var(--color-border)' }}
       >

@@ -25,22 +25,22 @@ const MapStatsDashboard: React.FC<MapStatsProps> = ({ claims }) => {
   const pendingClaims = claims.filter(c => c.status === 'pending').length;
   const underReviewClaims = claims.filter(c => c.status === 'under-review').length;
   const rejectedClaims = claims.filter(c => c.status === 'rejected').length;
-  
+
   const totalArea = claims.reduce((sum, claim) => sum + claim.extent, 0);
   const approvedArea = claims
     .filter(c => c.status === 'approved')
     .reduce((sum, claim) => sum + claim.extent, 0);
-  
+
   const approvalRate = totalClaims > 0 ? ((approvedClaims / totalClaims) * 100).toFixed(1) : '0';
-  
+
   // Village distribution
   const villageStats = claims.reduce((acc, claim) => {
     acc[claim.village] = (acc[claim.village] || 0) + 1;
     return acc;
   }, {} as Record<string, number>);
-  
+
   const topVillages = Object.entries(villageStats)
-    .sort(([,a], [,b]) => b - a)
+    .sort(([, a], [, b]) => b - a)
     .slice(0, 5);
 
   const statCards = [
@@ -83,13 +83,13 @@ const MapStatsDashboard: React.FC<MapStatsProps> = ({ claims }) => {
       {/* Quick Stats Grid */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {statCards.map((stat, idx) => (
-          <div 
+          <div
             key={idx}
             className="p-4 rounded-lg border"
             style={{ backgroundColor: 'var(--color-surface)', borderColor: 'var(--color-border)' }}
           >
             <div className="flex items-center justify-between mb-2">
-              <div 
+              <div
                 className="p-2 rounded-lg"
                 style={{ backgroundColor: stat.bgColor }}
               >
@@ -112,7 +112,7 @@ const MapStatsDashboard: React.FC<MapStatsProps> = ({ claims }) => {
       {/* Detailed Breakdown */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Status Distribution */}
-        <div 
+        <div
           className="p-4 rounded-lg border"
           style={{ backgroundColor: 'var(--color-surface)', borderColor: 'var(--color-border)' }}
         >
@@ -130,9 +130,9 @@ const MapStatsDashboard: React.FC<MapStatsProps> = ({ claims }) => {
                   {approvedClaims}
                 </span>
                 <div className="w-16 h-2 rounded-full" style={{ backgroundColor: 'var(--color-surface-muted)' }}>
-                  <div 
+                  <div
                     className="h-2 rounded-full"
-                    style={{ 
+                    style={{
                       backgroundColor: 'var(--color-success)',
                       width: `${totalClaims > 0 ? (approvedClaims / totalClaims) * 100 : 0}%`
                     }}
@@ -151,9 +151,9 @@ const MapStatsDashboard: React.FC<MapStatsProps> = ({ claims }) => {
                   {pendingClaims}
                 </span>
                 <div className="w-16 h-2 rounded-full" style={{ backgroundColor: 'var(--color-surface-muted)' }}>
-                  <div 
+                  <div
                     className="h-2 rounded-full"
-                    style={{ 
+                    style={{
                       backgroundColor: 'var(--color-warning)',
                       width: `${totalClaims > 0 ? (pendingClaims / totalClaims) * 100 : 0}%`
                     }}
@@ -172,9 +172,9 @@ const MapStatsDashboard: React.FC<MapStatsProps> = ({ claims }) => {
                   {underReviewClaims}
                 </span>
                 <div className="w-16 h-2 rounded-full" style={{ backgroundColor: 'var(--color-surface-muted)' }}>
-                  <div 
+                  <div
                     className="h-2 rounded-full"
-                    style={{ 
+                    style={{
                       backgroundColor: 'var(--color-info)',
                       width: `${totalClaims > 0 ? (underReviewClaims / totalClaims) * 100 : 0}%`
                     }}
@@ -193,9 +193,9 @@ const MapStatsDashboard: React.FC<MapStatsProps> = ({ claims }) => {
                   {rejectedClaims}
                 </span>
                 <div className="w-16 h-2 rounded-full" style={{ backgroundColor: 'var(--color-surface-muted)' }}>
-                  <div 
+                  <div
                     className="h-2 rounded-full"
-                    style={{ 
+                    style={{
                       backgroundColor: 'var(--color-danger)',
                       width: `${totalClaims > 0 ? (rejectedClaims / totalClaims) * 100 : 0}%`
                     }}
@@ -207,7 +207,7 @@ const MapStatsDashboard: React.FC<MapStatsProps> = ({ claims }) => {
         </div>
 
         {/* Top Villages */}
-        <div 
+        <div
           className="p-4 rounded-lg border"
           style={{ backgroundColor: 'var(--color-surface)', borderColor: 'var(--color-border)' }}
         >
@@ -218,7 +218,7 @@ const MapStatsDashboard: React.FC<MapStatsProps> = ({ claims }) => {
             {topVillages.map(([village, count], idx) => (
               <div key={village} className="flex items-center justify-between">
                 <div className="flex items-center space-x-2">
-                  <div 
+                  <div
                     className="w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold text-white"
                     style={{ backgroundColor: 'var(--color-primary)' }}
                   >
@@ -233,9 +233,9 @@ const MapStatsDashboard: React.FC<MapStatsProps> = ({ claims }) => {
                     {count} claims
                   </span>
                   <div className="w-12 h-2 rounded-full" style={{ backgroundColor: 'var(--color-surface-muted)' }}>
-                    <div 
+                    <div
                       className="h-2 rounded-full"
-                      style={{ 
+                      style={{
                         backgroundColor: 'var(--color-primary)',
                         width: `${(count / totalClaims) * 100}%`
                       }}
@@ -249,7 +249,7 @@ const MapStatsDashboard: React.FC<MapStatsProps> = ({ claims }) => {
       </div>
 
       {/* Quick Actions */}
-      <div 
+      <div
         className="p-4 rounded-lg border"
         style={{ backgroundColor: 'var(--color-surface)', borderColor: 'var(--color-border)' }}
       >
@@ -257,25 +257,25 @@ const MapStatsDashboard: React.FC<MapStatsProps> = ({ claims }) => {
           Quick Map Actions
         </h3>
         <div className="flex flex-wrap gap-2">
-          <button 
+          <button
             className="px-3 py-1 rounded text-sm font-medium transition hover:bg-opacity-90"
             style={{ backgroundColor: 'var(--color-primary)', color: 'white' }}
           >
             View All Claims
           </button>
-          <button 
+          <button
             className="px-3 py-1 rounded text-sm font-medium transition hover:bg-opacity-90"
             style={{ backgroundColor: 'var(--color-warning)', color: 'white' }}
           >
             Pending Only
           </button>
-          <button 
+          <button
             className="px-3 py-1 rounded text-sm font-medium transition hover:bg-opacity-90"
             style={{ backgroundColor: 'var(--color-success)', color: 'white' }}
           >
             Approved Only
           </button>
-          <button 
+          <button
             className="px-3 py-1 rounded text-sm transition"
             style={{ backgroundColor: 'var(--color-surface-muted)', color: 'var(--color-text-primary)' }}
           >

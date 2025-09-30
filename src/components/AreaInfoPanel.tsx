@@ -12,7 +12,7 @@ interface AreaInfoPanelProps {
 
 const AreaInfoPanel: React.FC<AreaInfoPanelProps> = ({ selectedArea, onClose }) => {
   if (!selectedArea) return null;
-  
+
   const area = selectedArea;
 
   // Calculate actual active claims that overlap with this forest area
@@ -25,12 +25,12 @@ const AreaInfoPanel: React.FC<AreaInfoPanelProps> = ({ selectedArea, onClose }) 
       { areaName: 'Tripura Reserved Forest - Sector A', claimIds: [4, 5] }, // Melaghar, Udaipur
       { areaName: 'Reserve Forest - Ambassa Division', claimIds: [2, 3] }, // Ambassa, Kanchanpur
     ];
-    
-    const areaData = mockClaimsInArea.find(item => 
-      area.name.includes(item.areaName.split(' - ')[0]) || 
+
+    const areaData = mockClaimsInArea.find(item =>
+      area.name.includes(item.areaName.split(' - ')[0]) ||
       item.areaName.includes(area.name.split(' - ')[0])
     );
-    
+
     return areaData ? areaData.claimIds.length : Math.min(2, Math.floor(area.area / 200));
   };
 
@@ -104,7 +104,7 @@ const AreaInfoPanel: React.FC<AreaInfoPanelProps> = ({ selectedArea, onClose }) 
     >
       <div className="h-full overflow-y-auto">
         {/* Header */}
-        <div 
+        <div
           className="p-4 border-b sticky top-0 z-10"
           style={{
             backgroundColor: 'var(--color-surface)',
@@ -154,7 +154,7 @@ const AreaInfoPanel: React.FC<AreaInfoPanelProps> = ({ selectedArea, onClose }) 
 
           {/* Key Metrics */}
           <div className="grid grid-cols-2 gap-4">
-            <div 
+            <div
               className="p-3 rounded-lg border"
               style={{ backgroundColor: 'var(--color-surface-muted)', borderColor: 'var(--color-border)' }}
             >
@@ -169,7 +169,7 @@ const AreaInfoPanel: React.FC<AreaInfoPanelProps> = ({ selectedArea, onClose }) 
               </p>
             </div>
 
-            <div 
+            <div
               className="p-3 rounded-lg border"
               style={{ backgroundColor: 'var(--color-surface-muted)', borderColor: 'var(--color-border)' }}
               title="FRA claims that overlap with or are within this forest area"
@@ -246,7 +246,7 @@ const AreaInfoPanel: React.FC<AreaInfoPanelProps> = ({ selectedArea, onClose }) 
                 <span className="text-sm" style={{ color: 'var(--color-text-secondary)' }}>
                   Threat Level
                 </span>
-                <span 
+                <span
                   className="text-sm font-medium"
                   style={{ color: getThreatColor(additionalInfo.threatsLevel) }}
                 >
@@ -285,7 +285,7 @@ const AreaInfoPanel: React.FC<AreaInfoPanelProps> = ({ selectedArea, onClose }) 
             <h4 className="font-bold mb-3" style={{ color: 'var(--color-text-primary)' }}>
               Recent Activity
             </h4>
-            <div 
+            <div
               className="p-3 rounded-lg border"
               style={{ backgroundColor: 'var(--color-info-light)', borderColor: 'var(--color-info-border)' }}
             >

@@ -5,7 +5,7 @@ import { FRAClaim, MapClaim, ForestArea, convertFRAClaimToMapClaim } from '../ty
 
 // Import components dynamically to avoid SSR issues with map
 import dynamic from 'next/dynamic';
-const MapComponent = dynamic(() => import('./MapComponent'), { 
+const MapComponent = dynamic(() => import('./MapComponent'), {
   ssr: false,
   loading: () => <div className="flex items-center justify-center h-96 bg-gray-100 rounded-lg">Loading map...</div>
 });
@@ -238,21 +238,21 @@ const AranyaFRASystem: React.FC = () => {
   // AI-powered RAG function
   const analyzeVillageAndRecommend = (village: Village) => {
     setAnalyzing(true);
-    
+
     setTimeout(() => {
       const recommendations: Recommendation[] = [];
-      
+
       Object.entries(schemeKnowledgeBase).forEach(([schemeCode, scheme]: [string, SchemeInfo]) => {
         let score = 0;
         let matchedIndicators: MatchedIndicator[] = [];
         let reasoning: string[] = [];
-        
+
         Object.entries(scheme.indicators).forEach(([indicator, weight]) => {
           const villageIndicatorValue = village.indicators[indicator];
           if (villageIndicatorValue !== undefined) {
             const matchScore = (villageIndicatorValue / 100) * weight * 100;
             score += matchScore;
-            
+
             if (matchScore > 40) {
               matchedIndicators.push({
                 name: indicator,
@@ -263,29 +263,29 @@ const AranyaFRASystem: React.FC = () => {
             }
           }
         });
-        
+
         const normalizedScore = Math.min(100, (score / Object.keys(scheme.indicators).length));
-        
+
         if (normalizedScore > 60) {
           const topIndicators = matchedIndicators
             .sort((a, b) => b.impact - a.impact)
             .slice(0, 3);
-          
+
           topIndicators.forEach(ind => {
             reasoning.push(`High ${ind.name} (${ind.villageValue}%) aligns with scheme focus`);
           });
-          
+
           if (!village.existingSchemes.includes(schemeCode)) {
             reasoning.push('Not currently implemented - high potential for impact');
           } else {
             reasoning.push('Already active - consider expansion or optimization');
           }
-          
+
           if (schemeCode === 'FRA' && village.tribalPopulation > 70) {
             reasoning.push(`High tribal population (${village.tribalPopulation}%) makes this highly relevant`);
           }
         }
-        
+
         recommendations.push({
           scheme: schemeCode,
           details: scheme,
@@ -298,9 +298,9 @@ const AranyaFRASystem: React.FC = () => {
           isActive: village.existingSchemes.includes(schemeCode)
         });
       });
-      
-  recommendations.sort((a, b) => b.score - a.score);
-      
+
+      recommendations.sort((a, b) => b.score - a.score);
+
       setRagResults({
         village: village,
         recommendations: recommendations.slice(0, 5),
@@ -308,7 +308,7 @@ const AranyaFRASystem: React.FC = () => {
         totalSchemes: recommendations.length,
         criticalCount: recommendations.filter(r => r.priority === 'Critical').length
       });
-      
+
       setAnalyzing(false);
     }, 1500);
   };
@@ -391,12 +391,12 @@ const AranyaFRASystem: React.FC = () => {
     avgConfidence: Math.round(claimsData.reduce((sum, c) => sum + c.confidence, 0) / claimsData.length)
   };
 
-  const filteredClaims = filterStatus === 'all' 
-    ? claimsData 
+  const filteredClaims = filterStatus === 'all'
+    ? claimsData
     : claimsData.filter(c => c.status === filterStatus);
 
   const getStatusColor = (status: FRAClaim['status']) => {
-    switch(status) {
+    switch (status) {
       case 'approved': return 'gov-badge success';
       case 'pending': return 'gov-badge warning';
       case 'review': return 'gov-badge info';
@@ -405,7 +405,7 @@ const AranyaFRASystem: React.FC = () => {
   };
 
   const getPriorityColor = (priority: Recommendation['priority']) => {
-    switch(priority) {
+    switch (priority) {
       case 'Critical': return 'gov-badge danger';
       case 'High': return 'gov-badge warning';
       case 'Medium': return 'gov-badge info';
@@ -415,7 +415,7 @@ const AranyaFRASystem: React.FC = () => {
   };
 
   const getStatusIcon = (status: FRAClaim['status']) => {
-    switch(status) {
+    switch (status) {
       case 'approved': return <CheckCircle className="w-4 h-4" />;
       case 'pending': return <Clock className="w-4 h-4" />;
       case 'review': return <AlertCircle className="w-4 h-4" />;
@@ -442,9 +442,9 @@ const AranyaFRASystem: React.FC = () => {
 
   // OCR and NER Processing Function
   const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
-  const files = event.target.files;
-  if(!files || files.length === 0) return;
-  const file = files[0];
+    const files = event.target.files;
+    if (!files || files.length === 0) return;
+    const file = files[0];
     if (!file) return;
 
     setUploadedFile(file);
@@ -539,15 +539,15 @@ const AranyaFRASystem: React.FC = () => {
     // Extent
     const extentMatch = text.match(/Extent of Land:\s*([\d.]+)\s*hectares?/i);
     if (extentMatch) {
-  extracted.extent = parseFloat(extentMatch[1]);
+      extracted.extent = parseFloat(extentMatch[1]);
       extracted.confidence.extent = 97;
     }
 
     // Coordinates
     const coordMatch = text.match(/Coordinates:\s*([\d.]+)°\s*N,\s*([\d.]+)°\s*E/i);
     if (coordMatch) {
-  extracted.coordinates.lat = parseFloat(coordMatch[1]);
-  extracted.coordinates.lng = parseFloat(coordMatch[2]);
+      extracted.coordinates.lat = parseFloat(coordMatch[1]);
+      extracted.coordinates.lng = parseFloat(coordMatch[2]);
       extracted.confidence.coordinates = 94;
     }
 
@@ -578,7 +578,7 @@ const AranyaFRASystem: React.FC = () => {
     if (!extractedData) return;
 
     alert(`Claim saved successfully!\n\nClaimant: ${extractedData.claimantName}\nVillage: ${extractedData.village}\nExtent: ${extractedData.extent} hectares`);
-    
+
     setUploadModalOpen(false);
     setUploadedFile(null);
     setExtractedData(null);
@@ -631,7 +631,7 @@ const AranyaFRASystem: React.FC = () => {
         </div>
       </nav>
 
-  <main id="main" className="gov-container py-8">
+      <main id="main" className="gov-container py-8">
         {/* Dashboard View */}
         {activeTab === 'dashboard' && (
           <div className="space-y-8">
@@ -639,53 +639,53 @@ const AranyaFRASystem: React.FC = () => {
               <div className="gov-card accent-left">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-[11px] tracking-wide uppercase font-semibold" style={{color: 'var(--color-text-muted)'}}>Total Claims</p>
-                    <p className="text-2xl font-semibold mt-1" style={{color: 'var(--color-text-primary)'}}>{stats.totalClaims}</p>
+                    <p className="text-[11px] tracking-wide uppercase font-semibold" style={{ color: 'var(--color-text-muted)' }}>Total Claims</p>
+                    <p className="text-2xl font-semibold mt-1" style={{ color: 'var(--color-text-primary)' }}>{stats.totalClaims}</p>
                   </div>
-                  <div className="p-2 rounded-md" style={{backgroundColor: 'var(--color-surface-muted)'}}>
-                    <FileText className="w-5 h-5" style={{color: 'var(--color-primary)'}} />
-                  </div>
-                </div>
-              </div>
-              <div className="gov-card accent-left">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-[11px] tracking-wide uppercase font-semibold" style={{color: 'var(--color-text-muted)'}}>Pending Review</p>
-                    <p className="text-2xl font-semibold mt-1" style={{color: 'var(--color-warning)'}}>{stats.pending}</p>
-                  </div>
-                  <div className="p-2 rounded-md" style={{backgroundColor: 'var(--color-surface-muted)'}}>
-                    <Clock className="w-5 h-5" style={{color: 'var(--color-warning)'}} />
+                  <div className="p-2 rounded-md" style={{ backgroundColor: 'var(--color-surface-muted)' }}>
+                    <FileText className="w-5 h-5" style={{ color: 'var(--color-primary)' }} />
                   </div>
                 </div>
               </div>
               <div className="gov-card accent-left">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-[11px] tracking-wide uppercase font-semibold" style={{color: 'var(--color-text-muted)'}}>Villages Analyzed</p>
-                    <p className="text-2xl font-semibold mt-1" style={{color: 'var(--color-success)'}}>{villageData.length}</p>
+                    <p className="text-[11px] tracking-wide uppercase font-semibold" style={{ color: 'var(--color-text-muted)' }}>Pending Review</p>
+                    <p className="text-2xl font-semibold mt-1" style={{ color: 'var(--color-warning)' }}>{stats.pending}</p>
                   </div>
-                  <div className="p-2 rounded-md" style={{backgroundColor: 'var(--color-surface-muted)'}}>
-                    <Target className="w-5 h-5" style={{color: 'var(--color-success)'}} />
+                  <div className="p-2 rounded-md" style={{ backgroundColor: 'var(--color-surface-muted)' }}>
+                    <Clock className="w-5 h-5" style={{ color: 'var(--color-warning)' }} />
                   </div>
                 </div>
               </div>
               <div className="gov-card accent-left">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-[11px] tracking-wide uppercase font-semibold" style={{color: 'var(--color-text-muted)'}}>AI Confidence</p>
-                    <p className="text-2xl font-semibold mt-1" style={{color: 'var(--color-text-primary)'}}>{stats.avgConfidence}%</p>
+                    <p className="text-[11px] tracking-wide uppercase font-semibold" style={{ color: 'var(--color-text-muted)' }}>Villages Analyzed</p>
+                    <p className="text-2xl font-semibold mt-1" style={{ color: 'var(--color-success)' }}>{villageData.length}</p>
                   </div>
-                  <div className="p-2 rounded-md" style={{backgroundColor: 'var(--color-surface-muted)'}}>
-                    <Brain className="w-5 h-5" style={{color: 'var(--color-primary)'}} />
+                  <div className="p-2 rounded-md" style={{ backgroundColor: 'var(--color-surface-muted)' }}>
+                    <Target className="w-5 h-5" style={{ color: 'var(--color-success)' }} />
+                  </div>
+                </div>
+              </div>
+              <div className="gov-card accent-left">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-[11px] tracking-wide uppercase font-semibold" style={{ color: 'var(--color-text-muted)' }}>AI Confidence</p>
+                    <p className="text-2xl font-semibold mt-1" style={{ color: 'var(--color-text-primary)' }}>{stats.avgConfidence}%</p>
+                  </div>
+                  <div className="p-2 rounded-md" style={{ backgroundColor: 'var(--color-surface-muted)' }}>
+                    <Brain className="w-5 h-5" style={{ color: 'var(--color-primary)' }} />
                   </div>
                 </div>
               </div>
             </div>
             {/* Quick Access to DSS */}
-            <section className="gov-card flex flex-col md:flex-row items-center justify-between gap-6" style={{backgroundColor: 'var(--color-surface)'}}>
+            <section className="gov-card flex flex-col md:flex-row items-center justify-between gap-6" style={{ backgroundColor: 'var(--color-surface)' }}>
               <div className="flex-1">
-                <h2 className="text-xl font-semibold mb-1 tracking-tight" style={{color: 'var(--color-text-primary)'}}>AI Decision Support System</h2>
-                <p className="text-sm mb-4" style={{color: 'var(--color-text-secondary)'}}>Analyzing {Object.keys(schemeKnowledgeBase).length} registered schemes via indicator matching</p>
+                <h2 className="text-xl font-semibold mb-1 tracking-tight" style={{ color: 'var(--color-text-primary)' }}>AI Decision Support System</h2>
+                <p className="text-sm mb-4" style={{ color: 'var(--color-text-secondary)' }}>Analyzing {Object.keys(schemeKnowledgeBase).length} registered schemes via indicator matching</p>
                 <button
                   onClick={() => setActiveTab('dss')}
                   className="gov-btn"
@@ -694,7 +694,7 @@ const AranyaFRASystem: React.FC = () => {
                 </button>
               </div>
               <div className="hidden md:block pr-4">
-                <Database className="w-24 h-24 opacity-15" style={{color: 'var(--color-primary)'}} />
+                <Database className="w-24 h-24 opacity-15" style={{ color: 'var(--color-primary)' }} />
               </div>
             </section>
 
@@ -705,15 +705,15 @@ const AranyaFRASystem: React.FC = () => {
                   <div className="flex items-center space-x-4">
                     <div className="flex items-center space-x-1">
                       <div className="w-3 h-3 rounded-full bg-green-500"></div>
-                      <span className="text-xs font-medium" style={{color: 'var(--color-text-secondary)'}}>Approved ({claimsData.filter(c => c.status === 'approved').length})</span>
+                      <span className="text-xs font-medium" style={{ color: 'var(--color-text-secondary)' }}>Approved ({claimsData.filter(c => c.status === 'approved').length})</span>
                     </div>
                     <div className="flex items-center space-x-1">
                       <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
-                      <span className="text-xs font-medium" style={{color: 'var(--color-text-secondary)'}}>Pending ({claimsData.filter(c => c.status === 'pending').length})</span>
+                      <span className="text-xs font-medium" style={{ color: 'var(--color-text-secondary)' }}>Pending ({claimsData.filter(c => c.status === 'pending').length})</span>
                     </div>
                     <div className="flex items-center space-x-1">
                       <div className="w-3 h-3 rounded-full bg-orange-500"></div>
-                      <span className="text-xs font-medium" style={{color: 'var(--color-text-secondary)'}}>Review ({claimsData.filter(c => c.status === 'review').length})</span>
+                      <span className="text-xs font-medium" style={{ color: 'var(--color-text-secondary)' }}>Review ({claimsData.filter(c => c.status === 'review').length})</span>
                     </div>
                   </div>
                 </div>
@@ -725,7 +725,7 @@ const AranyaFRASystem: React.FC = () => {
                     <div className="absolute inset-0 opacity-20">
                       <div className="w-full h-full bg-green-100 opacity-50"></div>
                     </div>
-                    <div className="absolute top-4 left-4 px-3 py-1 rounded-full text-sm font-semibold" style={{backgroundColor: 'var(--color-surface)', color: 'var(--color-text-primary)', border: '1px solid var(--color-border)'}}>
+                    <div className="absolute top-4 left-4 px-3 py-1 rounded-full text-sm font-semibold" style={{ backgroundColor: 'var(--color-surface)', color: 'var(--color-text-primary)', border: '1px solid var(--color-border)' }}>
                       Tripura Forest Region
                     </div>
                     <div className="relative w-full h-full">
@@ -738,17 +738,16 @@ const AranyaFRASystem: React.FC = () => {
                             top: `${25 + (idx % 3) * 25}%`
                           }}
                         >
-                          <div className={`w-10 h-10 rounded-full flex items-center justify-center shadow-lg transform hover:scale-125 transition-all duration-200 ${
-                            claim.status === 'approved' ? 'bg-green-500 hover:bg-green-600' :
-                            claim.status === 'pending' ? 'bg-yellow-500 hover:bg-yellow-600' :
-                            'bg-orange-500 hover:bg-orange-600'
-                          }`}>
+                          <div className={`w-10 h-10 rounded-full flex items-center justify-center shadow-lg transform hover:scale-125 transition-all duration-200 ${claim.status === 'approved' ? 'bg-green-500 hover:bg-green-600' :
+                              claim.status === 'pending' ? 'bg-yellow-500 hover:bg-yellow-600' :
+                                'bg-orange-500 hover:bg-orange-600'
+                            }`}>
                             <MapPin className="w-5 h-5 text-white" />
                           </div>
-                          <div className="absolute top-12 left-1/2 transform -translate-x-1/2 px-3 py-2 rounded-lg shadow-xl opacity-0 group-hover:opacity-100 transition-opacity z-10" 
-                               style={{backgroundColor: 'var(--color-surface)', border: '2px solid var(--color-border)', color: 'var(--color-text-primary)'}}>
+                          <div className="absolute top-12 left-1/2 transform -translate-x-1/2 px-3 py-2 rounded-lg shadow-xl opacity-0 group-hover:opacity-100 transition-opacity z-10"
+                            style={{ backgroundColor: 'var(--color-surface)', border: '2px solid var(--color-border)', color: 'var(--color-text-primary)' }}>
                             <div className="text-sm font-bold">{claim.village}</div>
-                            <div className="text-xs" style={{color: 'var(--color-text-secondary)'}}>
+                            <div className="text-xs" style={{ color: 'var(--color-text-secondary)' }}>
                               {claim.claimantName}
                             </div>
                             <div className="text-xs font-semibold mt-1">
@@ -760,53 +759,53 @@ const AranyaFRASystem: React.FC = () => {
                     </div>
                   </div>
                 </div>
-                
+
                 {/* Claims Summary Stats */}
                 <div className="space-y-4">
-                  <div className="p-4 rounded-xl border-2 transition-all hover:shadow-md" style={{backgroundColor: 'var(--color-surface)', borderColor: 'var(--color-success-border)'}}>
+                  <div className="p-4 rounded-xl border-2 transition-all hover:shadow-md" style={{ backgroundColor: 'var(--color-surface)', borderColor: 'var(--color-success-border)' }}>
                     <div className="flex items-center space-x-3">
-                      <div className="p-2 rounded-lg" style={{backgroundColor: 'var(--color-success-light)'}}>
-                        <CheckCircle className="w-5 h-5" style={{color: 'var(--color-success)'}} />
+                      <div className="p-2 rounded-lg" style={{ backgroundColor: 'var(--color-success-light)' }}>
+                        <CheckCircle className="w-5 h-5" style={{ color: 'var(--color-success)' }} />
                       </div>
                       <div>
-                        <div className="text-2xl font-bold" style={{color: 'var(--color-success)'}}>{claimsData.filter(c => c.status === 'approved').length}</div>
-                        <div className="text-sm font-medium" style={{color: 'var(--color-text-secondary)'}}>Approved Claims</div>
+                        <div className="text-2xl font-bold" style={{ color: 'var(--color-success)' }}>{claimsData.filter(c => c.status === 'approved').length}</div>
+                        <div className="text-sm font-medium" style={{ color: 'var(--color-text-secondary)' }}>Approved Claims</div>
                       </div>
                     </div>
                   </div>
 
-                  <div className="p-4 rounded-xl border-2 transition-all hover:shadow-md" style={{backgroundColor: 'var(--color-surface)', borderColor: 'var(--color-warning-border)'}}>
+                  <div className="p-4 rounded-xl border-2 transition-all hover:shadow-md" style={{ backgroundColor: 'var(--color-surface)', borderColor: 'var(--color-warning-border)' }}>
                     <div className="flex items-center space-x-3">
-                      <div className="p-2 rounded-lg" style={{backgroundColor: 'var(--color-warning-light)'}}>
-                        <Clock className="w-5 h-5" style={{color: 'var(--color-warning)'}} />
+                      <div className="p-2 rounded-lg" style={{ backgroundColor: 'var(--color-warning-light)' }}>
+                        <Clock className="w-5 h-5" style={{ color: 'var(--color-warning)' }} />
                       </div>
                       <div>
-                        <div className="text-2xl font-bold" style={{color: 'var(--color-warning)'}}>{claimsData.filter(c => c.status === 'pending').length}</div>
-                        <div className="text-sm font-medium" style={{color: 'var(--color-text-secondary)'}}>Pending Review</div>
+                        <div className="text-2xl font-bold" style={{ color: 'var(--color-warning)' }}>{claimsData.filter(c => c.status === 'pending').length}</div>
+                        <div className="text-sm font-medium" style={{ color: 'var(--color-text-secondary)' }}>Pending Review</div>
                       </div>
                     </div>
                   </div>
 
-                  <div className="p-4 rounded-xl border-2 transition-all hover:shadow-md" style={{backgroundColor: 'var(--color-surface)', borderColor: 'var(--color-info-border)'}}>
+                  <div className="p-4 rounded-xl border-2 transition-all hover:shadow-md" style={{ backgroundColor: 'var(--color-surface)', borderColor: 'var(--color-info-border)' }}>
                     <div className="flex items-center space-x-3">
-                      <div className="p-2 rounded-lg" style={{backgroundColor: 'var(--color-info-light)'}}>
-                        <Target className="w-5 h-5" style={{color: 'var(--color-info)'}} />
+                      <div className="p-2 rounded-lg" style={{ backgroundColor: 'var(--color-info-light)' }}>
+                        <Target className="w-5 h-5" style={{ color: 'var(--color-info)' }} />
                       </div>
                       <div>
-                        <div className="text-2xl font-bold" style={{color: 'var(--color-info)'}}>{claimsData.reduce((sum, c) => sum + c.extent, 0).toLocaleString()}</div>
-                        <div className="text-sm font-medium" style={{color: 'var(--color-text-secondary)'}}>Total Acres</div>
+                        <div className="text-2xl font-bold" style={{ color: 'var(--color-info)' }}>{claimsData.reduce((sum, c) => sum + c.extent, 0).toLocaleString()}</div>
+                        <div className="text-sm font-medium" style={{ color: 'var(--color-text-secondary)' }}>Total Acres</div>
                       </div>
                     </div>
                   </div>
 
-                  <div className="p-4 rounded-xl border-2 transition-all hover:shadow-md" style={{backgroundColor: 'var(--color-surface)', borderColor: 'var(--color-primary-border)'}}>
+                  <div className="p-4 rounded-xl border-2 transition-all hover:shadow-md" style={{ backgroundColor: 'var(--color-surface)', borderColor: 'var(--color-primary-border)' }}>
                     <div className="flex items-center space-x-3">
-                      <div className="p-2 rounded-lg" style={{backgroundColor: 'var(--color-primary-light)'}}>
-                        <Users className="w-5 h-5" style={{color: 'var(--color-primary)'}} />
+                      <div className="p-2 rounded-lg" style={{ backgroundColor: 'var(--color-primary-light)' }}>
+                        <Users className="w-5 h-5" style={{ color: 'var(--color-primary)' }} />
                       </div>
                       <div>
-                        <div className="text-2xl font-bold" style={{color: 'var(--color-primary)'}}>{claimsData.length}</div>
-                        <div className="text-sm font-medium" style={{color: 'var(--color-text-secondary)'}}>Active Villages</div>
+                        <div className="text-2xl font-bold" style={{ color: 'var(--color-primary)' }}>{claimsData.length}</div>
+                        <div className="text-sm font-medium" style={{ color: 'var(--color-text-secondary)' }}>Active Villages</div>
                       </div>
                     </div>
                   </div>
@@ -817,7 +816,7 @@ const AranyaFRASystem: React.FC = () => {
             {/* Interactive Dashboard Charts */}
             <DashboardCharts claims={claimsData.map(convertFRAClaimToMapClaim)} />
           </div>
-  )}
+        )}
 
         {/* AI Decision Support System */}
         {activeTab === 'dss' && (
@@ -826,17 +825,17 @@ const AranyaFRASystem: React.FC = () => {
               <div className="flex items-start justify-between">
                 <div>
                   <div className="flex items-center space-x-3 mb-2">
-                    <div className="p-2 rounded-lg" style={{backgroundColor: 'var(--color-surface-muted)'}}>
-                      <Brain className="w-6 h-6" style={{color: 'var(--color-primary)'}} />
+                    <div className="p-2 rounded-lg" style={{ backgroundColor: 'var(--color-surface-muted)' }}>
+                      <Brain className="w-6 h-6" style={{ color: 'var(--color-primary)' }} />
                     </div>
-                    <h2 className="text-2xl font-bold" style={{color: 'var(--color-text-primary)'}}>AI-Powered Decision Support System</h2>
+                    <h2 className="text-2xl font-bold" style={{ color: 'var(--color-text-primary)' }}>AI-Powered Decision Support System</h2>
                   </div>
-                  <p style={{color: 'var(--color-text-secondary)'}}>RAG-based analysis of {Object.keys(schemeKnowledgeBase).length} government schemes</p>
+                  <p style={{ color: 'var(--color-text-secondary)' }}>RAG-based analysis of {Object.keys(schemeKnowledgeBase).length} government schemes</p>
                 </div>
-                <div className="px-4 py-2 rounded-lg" style={{backgroundColor: 'var(--color-success-light)', border: '1px solid var(--color-success)'}}>
+                <div className="px-4 py-2 rounded-lg" style={{ backgroundColor: 'var(--color-success-light)', border: '1px solid var(--color-success)' }}>
                   <div className="flex items-center space-x-2">
-                    <div className="w-2 h-2 rounded-full animate-pulse" style={{backgroundColor: 'var(--color-success)'}}></div>
-                    <span className="text-sm font-medium" style={{color: 'var(--color-success)'}}>AI Online</span>
+                    <div className="w-2 h-2 rounded-full animate-pulse" style={{ backgroundColor: 'var(--color-success)' }}></div>
+                    <span className="text-sm font-medium" style={{ color: 'var(--color-success)' }}>AI Online</span>
                   </div>
                 </div>
               </div>
@@ -845,34 +844,34 @@ const AranyaFRASystem: React.FC = () => {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <div className="gov-card">
                 <div className="flex items-center space-x-3 mb-3">
-                  <Database className="w-5 h-5" style={{color: 'var(--color-primary)'}} />
-                  <h3 className="font-bold" style={{color: 'var(--color-text-primary)'}}>Knowledge Base</h3>
+                  <Database className="w-5 h-5" style={{ color: 'var(--color-primary)' }} />
+                  <h3 className="font-bold" style={{ color: 'var(--color-text-primary)' }}>Knowledge Base</h3>
                 </div>
-                <p className="text-3xl font-bold" style={{color: 'var(--color-primary)'}}>{Object.keys(schemeKnowledgeBase).length}</p>
-                <p className="text-sm mt-1" style={{color: 'var(--color-text-secondary)'}}>Schemes indexed</p>
+                <p className="text-3xl font-bold" style={{ color: 'var(--color-primary)' }}>{Object.keys(schemeKnowledgeBase).length}</p>
+                <p className="text-sm mt-1" style={{ color: 'var(--color-text-secondary)' }}>Schemes indexed</p>
               </div>
 
               <div className="gov-card">
                 <div className="flex items-center space-x-3 mb-3">
-                  <Target className="w-5 h-5" style={{color: 'var(--color-success)'}} />
-                  <h3 className="font-bold" style={{color: 'var(--color-text-primary)'}}>Coverage</h3>
+                  <Target className="w-5 h-5" style={{ color: 'var(--color-success)' }} />
+                  <h3 className="font-bold" style={{ color: 'var(--color-text-primary)' }}>Coverage</h3>
                 </div>
-                <p className="text-3xl font-bold" style={{color: 'var(--color-success)'}}>{villageData.length}</p>
-                <p className="text-sm mt-1" style={{color: 'var(--color-text-secondary)'}}>Villages analyzed</p>
+                <p className="text-3xl font-bold" style={{ color: 'var(--color-success)' }}>{villageData.length}</p>
+                <p className="text-sm mt-1" style={{ color: 'var(--color-text-secondary)' }}>Villages analyzed</p>
               </div>
 
               <div className="gov-card">
                 <div className="flex items-center space-x-3 mb-3">
-                  <Zap className="w-5 h-5" style={{color: 'var(--color-warning)'}} />
-                  <h3 className="font-bold" style={{color: 'var(--color-text-primary)'}}>Cost Efficiency</h3>
+                  <Zap className="w-5 h-5" style={{ color: 'var(--color-warning)' }} />
+                  <h3 className="font-bold" style={{ color: 'var(--color-text-primary)' }}>Cost Efficiency</h3>
                 </div>
-                <p className="text-3xl font-bold" style={{color: 'var(--color-warning)'}}>95%</p>
-                <p className="text-sm mt-1" style={{color: 'var(--color-text-secondary)'}}>Reduced analysis time</p>
+                <p className="text-3xl font-bold" style={{ color: 'var(--color-warning)' }}>95%</p>
+                <p className="text-sm mt-1" style={{ color: 'var(--color-text-secondary)' }}>Reduced analysis time</p>
               </div>
             </div>
 
             <div className="gov-card">
-              <h3 className="text-lg font-bold mb-4" style={{color: 'var(--color-text-primary)'}}>Select Village for AI Analysis</h3>
+              <h3 className="text-lg font-bold mb-4" style={{ color: 'var(--color-text-primary)' }}>Select Village for AI Analysis</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {villageData.map(village => (
                   <button
@@ -896,10 +895,10 @@ const AranyaFRASystem: React.FC = () => {
                     }}
                   >
                     <div className="flex items-center justify-between mb-2">
-                      <h4 className="font-bold" style={{color: 'var(--color-text-primary)'}}>{village.name}</h4>
-                      <Users className="w-5 h-5" style={{color: 'var(--color-text-muted)'}} />
+                      <h4 className="font-bold" style={{ color: 'var(--color-text-primary)' }}>{village.name}</h4>
+                      <Users className="w-5 h-5" style={{ color: 'var(--color-text-muted)' }} />
                     </div>
-                    <div className="space-y-1 text-sm" style={{color: 'var(--color-text-secondary)'}}>
+                    <div className="space-y-1 text-sm" style={{ color: 'var(--color-text-secondary)' }}>
                       <p>Population: {village.population.toLocaleString()}</p>
                       <p>Tribal: {village.tribalPopulation}%</p>
                       <p>Forest Cover: {village.forestCover}%</p>
@@ -1074,7 +1073,7 @@ const AranyaFRASystem: React.FC = () => {
                                   <span className="text-sm font-semibold capitalize" style={{ color: 'var(--color-text-primary)' }}>
                                     {ind.name.replace(/([A-Z])/g, ' $1').trim()}
                                   </span>
-                                  <span className="text-lg font-bold px-2 py-1 rounded-full text-xs" style={{ 
+                                  <span className="text-lg font-bold px-2 py-1 rounded-full text-xs" style={{
                                     backgroundColor: ind.villageValue >= 70 ? 'var(--color-success-light)' : ind.villageValue >= 50 ? 'var(--color-warning-light)' : 'var(--color-danger-light)',
                                     color: ind.villageValue >= 70 ? 'var(--color-success)' : ind.villageValue >= 50 ? 'var(--color-warning)' : 'var(--color-danger)'
                                   }}>
@@ -1084,7 +1083,7 @@ const AranyaFRASystem: React.FC = () => {
                                 <div className="w-full h-2 rounded-full overflow-hidden" style={{ backgroundColor: 'var(--color-surface-muted)' }}>
                                   <div
                                     className="h-2 rounded-full transition-all duration-500"
-                                    style={{ 
+                                    style={{
                                       width: `${ind.villageValue}%`,
                                       background: `linear-gradient(90deg, ${ind.villageValue >= 70 ? 'var(--color-success)' : ind.villageValue >= 50 ? 'var(--color-warning)' : 'var(--color-danger)'}, ${ind.villageValue >= 70 ? 'var(--color-success)' : ind.villageValue >= 50 ? 'var(--color-warning)' : 'var(--color-danger)'}90)`
                                     }}
@@ -1169,7 +1168,7 @@ const AranyaFRASystem: React.FC = () => {
                         </div>
                       </h4>
                       <p className="text-base mb-4 leading-relaxed" style={{ color: 'var(--color-text-primary)' }}>
-                        This system uses Retrieval-Augmented Generation (RAG) to match village-level socio-economic 
+                        This system uses Retrieval-Augmented Generation (RAG) to match village-level socio-economic
                         indicators with government scheme criteria stored in our knowledge base. This approach delivers:
                       </p>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -1225,7 +1224,7 @@ const AranyaFRASystem: React.FC = () => {
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-4">
                   <div className="relative">
-                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5" style={{color: 'var(--color-text-muted)'}} />
+                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5" style={{ color: 'var(--color-text-muted)' }} />
                     <input
                       type="text"
                       placeholder="Search claims..."
@@ -1262,37 +1261,36 @@ const AranyaFRASystem: React.FC = () => {
 
             <div className="gov-card overflow-hidden">
               <table className="w-full gov-table">
-                <thead style={{backgroundColor: 'var(--color-surface-muted)', borderBottom: '1px solid var(--color-border)'}}>
+                <thead style={{ backgroundColor: 'var(--color-surface-muted)', borderBottom: '1px solid var(--color-border)' }}>
                   <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium uppercase" style={{color: 'var(--color-text-muted)'}}>Claimant</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium uppercase" style={{color: 'var(--color-text-muted)'}}>Patta Number</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium uppercase" style={{color: 'var(--color-text-muted)'}}>Village</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium uppercase" style={{color: 'var(--color-text-muted)'}}>Extent</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium uppercase" style={{color: 'var(--color-text-muted)'}}>AI Score</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium uppercase" style={{color: 'var(--color-text-muted)'}}>Status</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium uppercase" style={{color: 'var(--color-text-muted)'}}>Action</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium uppercase" style={{ color: 'var(--color-text-muted)' }}>Claimant</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium uppercase" style={{ color: 'var(--color-text-muted)' }}>Patta Number</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium uppercase" style={{ color: 'var(--color-text-muted)' }}>Village</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium uppercase" style={{ color: 'var(--color-text-muted)' }}>Extent</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium uppercase" style={{ color: 'var(--color-text-muted)' }}>AI Score</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium uppercase" style={{ color: 'var(--color-text-muted)' }}>Status</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium uppercase" style={{ color: 'var(--color-text-muted)' }}>Action</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y">
                   {filteredClaims.map(claim => (
-                    <tr key={claim.id} className="transition hover:opacity-90" 
-                        onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--color-surface-muted)'}
-                        onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}>
+                    <tr key={claim.id} className="transition hover:opacity-90"
+                      onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--color-surface-muted)'}
+                      onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}>
                       <td className="px-6 py-4">
-                        <div className="font-medium" style={{color: 'var(--color-text-primary)'}}>{claim.claimantName}</div>
+                        <div className="font-medium" style={{ color: 'var(--color-text-primary)' }}>{claim.claimantName}</div>
                       </td>
-                      <td className="px-6 py-4 text-sm" style={{color: 'var(--color-text-secondary)'}}>{claim.pattaNumber}</td>
-                      <td className="px-6 py-4 text-sm" style={{color: 'var(--color-text-secondary)'}}>{claim.village}</td>
-                      <td className="px-6 py-4 text-sm" style={{color: 'var(--color-text-secondary)'}}>{claim.extent} ha</td>
+                      <td className="px-6 py-4 text-sm" style={{ color: 'var(--color-text-secondary)' }}>{claim.pattaNumber}</td>
+                      <td className="px-6 py-4 text-sm" style={{ color: 'var(--color-text-secondary)' }}>{claim.village}</td>
+                      <td className="px-6 py-4 text-sm" style={{ color: 'var(--color-text-secondary)' }}>{claim.extent} ha</td>
                       <td className="px-6 py-4">
                         <div className="flex items-center space-x-2">
                           <div className="w-16 bg-gray-200 rounded-full h-2">
                             <div
-                              className={`h-2 rounded-full ${
-                                claim.confidence >= 90 ? 'bg-green-500' :
-                                claim.confidence >= 75 ? 'bg-yellow-500' :
-                                'bg-orange-500'
-                              }`}
+                              className={`h-2 rounded-full ${claim.confidence >= 90 ? 'bg-green-500' :
+                                  claim.confidence >= 75 ? 'bg-yellow-500' :
+                                    'bg-orange-500'
+                                }`}
                               style={{ width: `${claim.confidence}%` }}
                             />
                           </div>
@@ -1309,7 +1307,7 @@ const AranyaFRASystem: React.FC = () => {
                         <button
                           onClick={() => setSelectedClaim(claim)}
                           className="font-medium text-sm flex items-center space-x-1 transition hover:opacity-80"
-                          style={{color: 'var(--color-primary)'}}
+                          style={{ color: 'var(--color-primary)' }}
                         >
                           <span>Review</span>
                           <ChevronRight className="w-4 h-4" />
@@ -1326,18 +1324,18 @@ const AranyaFRASystem: React.FC = () => {
         {/* Map View */}
         {activeTab === 'map' && (
           <div className="gov-card overflow-hidden">
-            <div className="p-6" style={{borderBottom: '1px solid var(--color-border)'}}>
+            <div className="p-6" style={{ borderBottom: '1px solid var(--color-border)' }}>
               <div className="flex items-center justify-between">
                 <div>
-                  <h2 className="text-lg font-bold" style={{color: 'var(--color-text-primary)'}}>Interactive Claims Map</h2>
-                  <p className="text-sm mt-1" style={{color: 'var(--color-text-secondary)'}}>Explore forest areas and FRA claims with real GIS functionality</p>
+                  <h2 className="text-lg font-bold" style={{ color: 'var(--color-text-primary)' }}>Interactive Claims Map</h2>
+                  <p className="text-sm mt-1" style={{ color: 'var(--color-text-secondary)' }}>Explore forest areas and FRA claims with real GIS functionality</p>
                 </div>
                 <div className="flex items-center space-x-2">
-                  <div className="flex items-center space-x-1 px-3 py-1 rounded text-xs" style={{backgroundColor: 'var(--color-info-light)', color: 'var(--color-info-text)'}}>
+                  <div className="flex items-center space-x-1 px-3 py-1 rounded text-xs" style={{ backgroundColor: 'var(--color-info-light)', color: 'var(--color-info-text)' }}>
                     <Layers className="w-3 h-3" />
                     <span>Satellite + Forest Layers</span>
                   </div>
-                  <div className="flex items-center space-x-1 px-3 py-1 rounded text-xs" style={{backgroundColor: 'var(--color-success-light)', color: 'var(--color-success-text)'}}>
+                  <div className="flex items-center space-x-1 px-3 py-1 rounded text-xs" style={{ backgroundColor: 'var(--color-success-light)', color: 'var(--color-success-text)' }}>
                     <MapPin className="w-3 h-3" />
                     <span>{claimsData.length} Claims</span>
                   </div>
@@ -1363,17 +1361,17 @@ const AranyaFRASystem: React.FC = () => {
             </div>
           </div>
         )}
-  </main>
+      </main>
 
       {/* Claim Review Modal */}
       {selectedClaim && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <div className="rounded-xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto" style={{backgroundColor: 'var(--color-surface)'}}>
+          <div className="rounded-xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto" style={{ backgroundColor: 'var(--color-surface)' }}>
             <div className="p-6 border-b text-white gov-header">
               <div className="flex items-center justify-between">
                 <div>
                   <h2 className="text-2xl font-bold">Claim Review</h2>
-                  <p className="mt-1" style={{color: 'var(--color-primary-light)'}}>{selectedClaim.pattaNumber}</p>
+                  <p className="mt-1" style={{ color: 'var(--color-primary-light)' }}>{selectedClaim.pattaNumber}</p>
                 </div>
                 <button
                   onClick={() => setSelectedClaim(null)}
@@ -1386,25 +1384,25 @@ const AranyaFRASystem: React.FC = () => {
 
             <div className="p-6 space-y-6">
               <div>
-                <h3 className="text-lg font-bold mb-4 flex items-center space-x-2" style={{color: 'var(--color-text-primary)'}}>
-                  <Users className="w-5 h-5" style={{color: 'var(--color-primary)'}} />
+                <h3 className="text-lg font-bold mb-4 flex items-center space-x-2" style={{ color: 'var(--color-text-primary)' }}>
+                  <Users className="w-5 h-5" style={{ color: 'var(--color-primary)' }} />
                   <span>Claimant Information</span>
                 </h3>
                 <div className="grid grid-cols-2 gap-4">
-                  <div className="p-4 rounded-lg border-2 transition-all hover:shadow-sm" style={{backgroundColor: 'var(--color-surface)', borderColor: 'var(--color-border)'}}>
-                    <p className="text-sm font-semibold" style={{color: 'var(--color-text-secondary)'}}>Name</p>
-                    <p className="font-bold mt-1 text-lg" style={{color: 'var(--color-text-primary)'}}>{selectedClaim.claimantName}</p>
+                  <div className="p-4 rounded-lg border-2 transition-all hover:shadow-sm" style={{ backgroundColor: 'var(--color-surface)', borderColor: 'var(--color-border)' }}>
+                    <p className="text-sm font-semibold" style={{ color: 'var(--color-text-secondary)' }}>Name</p>
+                    <p className="font-bold mt-1 text-lg" style={{ color: 'var(--color-text-primary)' }}>{selectedClaim.claimantName}</p>
                   </div>
-                  <div className="p-4 rounded-lg border-2 transition-all hover:shadow-sm" style={{backgroundColor: 'var(--color-surface)', borderColor: 'var(--color-border)'}}>
-                    <p className="text-sm font-semibold" style={{color: 'var(--color-text-secondary)'}}>Village</p>
-                    <p className="font-bold mt-1 text-lg" style={{color: 'var(--color-text-primary)'}}>{selectedClaim.village}</p>
+                  <div className="p-4 rounded-lg border-2 transition-all hover:shadow-sm" style={{ backgroundColor: 'var(--color-surface)', borderColor: 'var(--color-border)' }}>
+                    <p className="text-sm font-semibold" style={{ color: 'var(--color-text-secondary)' }}>Village</p>
+                    <p className="font-bold mt-1 text-lg" style={{ color: 'var(--color-text-primary)' }}>{selectedClaim.village}</p>
                   </div>
-                  <div className="p-4 rounded-lg border-2 transition-all hover:shadow-sm" style={{backgroundColor: 'var(--color-surface)', borderColor: 'var(--color-border)'}}>
-                    <p className="text-sm font-semibold" style={{color: 'var(--color-text-secondary)'}}>Extent</p>
-                    <p className="font-bold mt-1 text-lg" style={{color: 'var(--color-text-primary)'}}>{selectedClaim.extent} hectares</p>
+                  <div className="p-4 rounded-lg border-2 transition-all hover:shadow-sm" style={{ backgroundColor: 'var(--color-surface)', borderColor: 'var(--color-border)' }}>
+                    <p className="text-sm font-semibold" style={{ color: 'var(--color-text-secondary)' }}>Extent</p>
+                    <p className="font-bold mt-1 text-lg" style={{ color: 'var(--color-text-primary)' }}>{selectedClaim.extent} hectares</p>
                   </div>
-                  <div className="p-4 rounded-lg border-2 transition-all hover:shadow-sm" style={{backgroundColor: 'var(--color-surface)', borderColor: 'var(--color-border)'}}>
-                    <p className="text-sm font-semibold" style={{color: 'var(--color-text-secondary)'}}>Status</p>
+                  <div className="p-4 rounded-lg border-2 transition-all hover:shadow-sm" style={{ backgroundColor: 'var(--color-surface)', borderColor: 'var(--color-border)' }}>
+                    <p className="text-sm font-semibold" style={{ color: 'var(--color-text-secondary)' }}>Status</p>
                     <span className={`inline-flex items-center space-x-1 px-3 py-1 rounded-full text-sm font-semibold mt-2 ${getStatusColor(selectedClaim.status)}`}>
                       {getStatusIcon(selectedClaim.status)}
                       <span className="capitalize">{selectedClaim.status}</span>
@@ -1414,28 +1412,28 @@ const AranyaFRASystem: React.FC = () => {
               </div>
 
               <div>
-                <h3 className="text-lg font-bold mb-4 flex items-center space-x-2" style={{color: 'var(--color-text-primary)'}}>
-                  <Brain className="w-5 h-5" style={{color: 'var(--color-primary)'}} />
+                <h3 className="text-lg font-bold mb-4 flex items-center space-x-2" style={{ color: 'var(--color-text-primary)' }}>
+                  <Brain className="w-5 h-5" style={{ color: 'var(--color-primary)' }} />
                   <span>AI Validation Results</span>
                 </h3>
                 <div className="space-y-3">
                   {Object.entries(selectedClaim.aiValidation).map(([key, value]) => (
-                    <div key={key} className="p-4 rounded-lg border-2 transition-all hover:shadow-sm" style={{backgroundColor: 'var(--color-surface)', borderColor: 'var(--color-border)'}}>
+                    <div key={key} className="p-4 rounded-lg border-2 transition-all hover:shadow-sm" style={{ backgroundColor: 'var(--color-surface)', borderColor: 'var(--color-border)' }}>
                       <div className="flex items-center justify-between mb-3">
-                        <p className="text-sm font-semibold capitalize" style={{color: 'var(--color-text-primary)'}}>{key.replace(/([A-Z])/g, ' $1').trim()} Match</p>
+                        <p className="text-sm font-semibold capitalize" style={{ color: 'var(--color-text-primary)' }}>{key.replace(/([A-Z])/g, ' $1').trim()} Match</p>
                         <div className="flex items-center space-x-2">
-                          <span className={`text-lg font-bold`} style={{color: value >= 90 ? 'var(--color-success)' : value >= 75 ? 'var(--color-warning)' : 'var(--color-danger)'}}>{value}%</span>
-                          <div className="w-6 h-6 rounded-full flex items-center justify-center" style={{backgroundColor: value >= 90 ? 'var(--color-success-light)' : value >= 75 ? 'var(--color-warning-light)' : 'var(--color-danger-light)'}}>
-                            {value >= 90 ? <CheckCircle className="w-4 h-4" style={{color: 'var(--color-success)'}} /> : 
-                             value >= 75 ? <AlertTriangle className="w-4 h-4" style={{color: 'var(--color-warning)'}} /> : 
-                             <AlertCircle className="w-4 h-4" style={{color: 'var(--color-danger)'}} />}
+                          <span className={`text-lg font-bold`} style={{ color: value >= 90 ? 'var(--color-success)' : value >= 75 ? 'var(--color-warning)' : 'var(--color-danger)' }}>{value}%</span>
+                          <div className="w-6 h-6 rounded-full flex items-center justify-center" style={{ backgroundColor: value >= 90 ? 'var(--color-success-light)' : value >= 75 ? 'var(--color-warning-light)' : 'var(--color-danger-light)' }}>
+                            {value >= 90 ? <CheckCircle className="w-4 h-4" style={{ color: 'var(--color-success)' }} /> :
+                              value >= 75 ? <AlertTriangle className="w-4 h-4" style={{ color: 'var(--color-warning)' }} /> :
+                                <AlertCircle className="w-4 h-4" style={{ color: 'var(--color-danger)' }} />}
                           </div>
                         </div>
                       </div>
-                      <div className="w-full rounded-full h-3 overflow-hidden" style={{backgroundColor: 'var(--color-surface-muted)'}}>
+                      <div className="w-full rounded-full h-3 overflow-hidden" style={{ backgroundColor: 'var(--color-surface-muted)' }}>
                         <div
                           className="h-3 rounded-full transition-all duration-500"
-                          style={{ 
+                          style={{
                             width: `${value}%`,
                             background: `linear-gradient(90deg, ${value >= 90 ? 'var(--color-success)' : value >= 75 ? 'var(--color-warning)' : 'var(--color-danger)'}, ${value >= 90 ? 'var(--color-success)' : value >= 75 ? 'var(--color-warning)' : 'var(--color-danger)'}90)`
                           }}
@@ -1447,44 +1445,44 @@ const AranyaFRASystem: React.FC = () => {
               </div>
 
               <div>
-                <h3 className="text-lg font-bold mb-4 flex items-center space-x-2" style={{color: 'var(--color-text-primary)'}}>
-                  <FileText className="w-5 h-5" style={{color: 'var(--color-primary)'}} />
+                <h3 className="text-lg font-bold mb-4 flex items-center space-x-2" style={{ color: 'var(--color-text-primary)' }}>
+                  <FileText className="w-5 h-5" style={{ color: 'var(--color-primary)' }} />
                   <span>Submitted Documents</span>
                 </h3>
                 <div className="grid grid-cols-2 gap-3">
                   {selectedClaim.documents.map((doc, idx) => (
-                    <div key={idx} className="flex items-center space-x-3 p-4 border-2 rounded-lg hover:shadow-sm transition-all" style={{borderColor: 'var(--color-border)', backgroundColor: 'var(--color-surface)'}}>
-                      <div className="p-2 rounded-lg" style={{backgroundColor: 'var(--color-info-light)'}}>
-                        <FileText className="w-4 h-4" style={{color: 'var(--color-info)'}} />
+                    <div key={idx} className="flex items-center space-x-3 p-4 border-2 rounded-lg hover:shadow-sm transition-all" style={{ borderColor: 'var(--color-border)', backgroundColor: 'var(--color-surface)' }}>
+                      <div className="p-2 rounded-lg" style={{ backgroundColor: 'var(--color-info-light)' }}>
+                        <FileText className="w-4 h-4" style={{ color: 'var(--color-info)' }} />
                       </div>
-                      <span className="text-sm font-semibold" style={{color: 'var(--color-text-primary)'}}>{doc}</span>
+                      <span className="text-sm font-semibold" style={{ color: 'var(--color-text-primary)' }}>{doc}</span>
                     </div>
                   ))}
                 </div>
               </div>
 
               <div>
-                <h3 className="text-lg font-bold mb-4 flex items-center space-x-2" style={{color: 'var(--color-text-primary)'}}>
-                  <MapPin className="w-5 h-5" style={{color: 'var(--color-primary)'}} />
+                <h3 className="text-lg font-bold mb-4 flex items-center space-x-2" style={{ color: 'var(--color-text-primary)' }}>
+                  <MapPin className="w-5 h-5" style={{ color: 'var(--color-primary)' }} />
                   <span>Geolocation</span>
                 </h3>
-                <div className="p-6 rounded-xl border-2 transition-all hover:shadow-md" style={{backgroundColor: 'var(--color-surface)', borderColor: 'var(--color-border)'}}>
+                <div className="p-6 rounded-xl border-2 transition-all hover:shadow-md" style={{ backgroundColor: 'var(--color-surface)', borderColor: 'var(--color-border)' }}>
                   <div className="flex items-center space-x-4">
-                    <div className="p-4 rounded-xl" style={{backgroundColor: 'var(--color-primary-light)'}}>
-                      <MapPin className="w-8 h-8" style={{color: 'var(--color-primary)'}} />
+                    <div className="p-4 rounded-xl" style={{ backgroundColor: 'var(--color-primary-light)' }}>
+                      <MapPin className="w-8 h-8" style={{ color: 'var(--color-primary)' }} />
                     </div>
                     <div className="flex-1">
                       <div className="flex items-center space-x-2 mb-2">
-                        <span className="text-sm font-semibold" style={{color: 'var(--color-text-secondary)'}}>Coordinates:</span>
-                        <span className="text-lg font-bold" style={{color: 'var(--color-text-primary)'}}>{selectedClaim.lat}°N, {selectedClaim.lng}°E</span>
+                        <span className="text-sm font-semibold" style={{ color: 'var(--color-text-secondary)' }}>Coordinates:</span>
+                        <span className="text-lg font-bold" style={{ color: 'var(--color-text-primary)' }}>{selectedClaim.lat}°N, {selectedClaim.lng}°E</span>
                       </div>
                       <div className="flex items-center space-x-2">
-                        <div className="w-2 h-2 rounded-full" style={{backgroundColor: 'var(--color-success)'}}></div>
-                        <span className="text-base font-semibold" style={{color: 'var(--color-text-primary)'}}>{selectedClaim.village} Village</span>
+                        <div className="w-2 h-2 rounded-full" style={{ backgroundColor: 'var(--color-success)' }}></div>
+                        <span className="text-base font-semibold" style={{ color: 'var(--color-text-primary)' }}>{selectedClaim.village} Village</span>
                       </div>
                     </div>
                     <div className="text-right">
-                      <div className="px-3 py-1 rounded-full text-xs font-semibold" style={{backgroundColor: 'var(--color-success-light)', color: 'var(--color-success)'}}>
+                      <div className="px-3 py-1 rounded-full text-xs font-semibold" style={{ backgroundColor: 'var(--color-success-light)', color: 'var(--color-success)' }}>
                         GPS Verified
                       </div>
                     </div>
@@ -1492,7 +1490,7 @@ const AranyaFRASystem: React.FC = () => {
                 </div>
               </div>
 
-              <div className="flex items-center justify-end space-x-3 pt-6 border-t-2" style={{borderColor: 'var(--color-border)'}}>
+              <div className="flex items-center justify-end space-x-3 pt-6 border-t-2" style={{ borderColor: 'var(--color-border)' }}>
                 <button
                   onClick={() => handleRequestMoreInfo(selectedClaim.id)}
                   className="flex items-center space-x-2 px-6 py-3 border-2 rounded-xl transition-all font-semibold hover:scale-105 hover:shadow-md"
@@ -1508,7 +1506,7 @@ const AranyaFRASystem: React.FC = () => {
                 <button
                   onClick={() => handleRejectClaim(selectedClaim.id)}
                   className="flex items-center space-x-2 px-6 py-3 text-white rounded-xl transition-all font-semibold hover:scale-105 hover:shadow-lg"
-                  style={{backgroundColor: 'var(--color-danger)'}}
+                  style={{ backgroundColor: 'var(--color-danger)' }}
                 >
                   <XCircle className="w-4 h-4" />
                   <span>Reject Claim</span>
@@ -1516,7 +1514,7 @@ const AranyaFRASystem: React.FC = () => {
                 <button
                   onClick={() => handleApproveClaim(selectedClaim.id)}
                   className="flex items-center space-x-2 px-8 py-3 text-white rounded-xl transition-all font-semibold hover:scale-105 hover:shadow-lg"
-                  style={{backgroundColor: 'var(--color-success)'}}
+                  style={{ backgroundColor: 'var(--color-success)' }}
                 >
                   <CheckCircle className="w-4 h-4" />
                   <span>Approve Claim</span>
@@ -1530,7 +1528,7 @@ const AranyaFRASystem: React.FC = () => {
       {/* Upload Claim Modal with OCR & NER */}
       {uploadModalOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <div className="rounded-xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto" style={{backgroundColor: 'var(--color-surface)'}}>
+          <div className="rounded-xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto" style={{ backgroundColor: 'var(--color-surface)' }}>
             <div className="p-6 gov-header">
               <div className="flex items-center justify-between">
                 <div>
@@ -1553,9 +1551,9 @@ const AranyaFRASystem: React.FC = () => {
             <div className="p-6 space-y-6">
               {!uploadedFile && (
                 <div className="border-2 border-dashed rounded-xl p-12 text-center transition cursor-pointer"
-                     style={{borderColor: 'var(--color-border)'}}
-                     onMouseEnter={(e) => e.currentTarget.style.borderColor = 'var(--color-primary)'}
-                     onMouseLeave={(e) => e.currentTarget.style.borderColor = 'var(--color-border)'}>
+                  style={{ borderColor: 'var(--color-border)' }}
+                  onMouseEnter={(e) => e.currentTarget.style.borderColor = 'var(--color-primary)'}
+                  onMouseLeave={(e) => e.currentTarget.style.borderColor = 'var(--color-border)'}>
                   <input
                     type="file"
                     id="file-upload"
@@ -1564,9 +1562,9 @@ const AranyaFRASystem: React.FC = () => {
                     className="hidden"
                   />
                   <label htmlFor="file-upload" className="cursor-pointer">
-                    <Upload className="w-16 h-16 mx-auto mb-4" style={{color: 'var(--color-text-muted)'}} />
-                    <h3 className="text-lg font-bold mb-2" style={{color: 'var(--color-text-primary)'}}>Upload Claim Document</h3>
-                    <p className="text-sm mb-4" style={{color: 'var(--color-text-secondary)'}}>
+                    <Upload className="w-16 h-16 mx-auto mb-4" style={{ color: 'var(--color-text-muted)' }} />
+                    <h3 className="text-lg font-bold mb-2" style={{ color: 'var(--color-text-primary)' }}>Upload Claim Document</h3>
+                    <p className="text-sm mb-4" style={{ color: 'var(--color-text-secondary)' }}>
                       Supported formats: JPG, PNG, PDF (Form A, Land Records, etc.)
                     </p>
                     <div className="gov-btn">
@@ -1577,20 +1575,20 @@ const AranyaFRASystem: React.FC = () => {
               )}
 
               {ocrProcessing && (
-                <div className="rounded-xl p-12 text-center border-2" 
-                     style={{backgroundColor: 'var(--color-surface-muted)', borderColor: 'var(--color-primary)'}}>
-                  <div className="inline-block animate-spin rounded-full h-16 w-16 border-b-2 mb-4" style={{borderColor: 'var(--color-primary)'}}></div>
-                  <h3 className="text-xl font-bold mb-2" style={{color: 'var(--color-text-primary)'}}>AI Processing Document</h3>
-                  <div className="space-y-2 text-sm" style={{color: 'var(--color-text-secondary)'}}>
+                <div className="rounded-xl p-12 text-center border-2"
+                  style={{ backgroundColor: 'var(--color-surface-muted)', borderColor: 'var(--color-primary)' }}>
+                  <div className="inline-block animate-spin rounded-full h-16 w-16 border-b-2 mb-4" style={{ borderColor: 'var(--color-primary)' }}></div>
+                  <h3 className="text-xl font-bold mb-2" style={{ color: 'var(--color-text-primary)' }}>AI Processing Document</h3>
+                  <div className="space-y-2 text-sm" style={{ color: 'var(--color-text-secondary)' }}>
                     <p className="flex items-center justify-center space-x-2">
-                      <CheckCircle className="w-4 h-4" style={{color: 'var(--color-success)'}} />
+                      <CheckCircle className="w-4 h-4" style={{ color: 'var(--color-success)' }} />
                       <span>Step 1: OCR Text Extraction - In Progress...</span>
                     </p>
-                    <p className="flex items-center justify-center space-x-2" style={{color: 'var(--color-text-muted)'}}>
+                    <p className="flex items-center justify-center space-x-2" style={{ color: 'var(--color-text-muted)' }}>
                       <Clock className="w-4 h-4" />
                       <span>Step 2: Named Entity Recognition (NER) - Waiting...</span>
                     </p>
-                    <p className="flex items-center justify-center space-x-2" style={{color: 'var(--color-text-muted)'}}>
+                    <p className="flex items-center justify-center space-x-2" style={{ color: 'var(--color-text-muted)' }}>
                       <Clock className="w-4 h-4" />
                       <span>Step 3: Data Validation - Waiting...</span>
                     </p>
@@ -1600,29 +1598,29 @@ const AranyaFRASystem: React.FC = () => {
 
               {extractedData && !ocrProcessing && (
                 <div className="space-y-6">
-                  <div className="border-2 rounded-xl p-6" style={{backgroundColor: 'var(--color-success-light)', borderColor: 'var(--color-success)'}}>
+                  <div className="border-2 rounded-xl p-6" style={{ backgroundColor: 'var(--color-success-light)', borderColor: 'var(--color-success)' }}>
                     <div className="flex items-center space-x-3 mb-3">
-                      <CheckCircle className="w-6 h-6" style={{color: 'var(--color-success)'}} />
-                      <h3 className="text-lg font-bold" style={{color: 'var(--color-success)'}}>Data Extraction Complete!</h3>
+                      <CheckCircle className="w-6 h-6" style={{ color: 'var(--color-success)' }} />
+                      <h3 className="text-lg font-bold" style={{ color: 'var(--color-success)' }}>Data Extraction Complete!</h3>
                     </div>
-                    <p className="text-sm" style={{color: 'var(--color-success)'}}>
+                    <p className="text-sm" style={{ color: 'var(--color-success)' }}>
                       AI has successfully extracted and validated the following information. Please review and confirm.
                     </p>
                   </div>
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="border-2 rounded-lg p-4" style={{backgroundColor: 'var(--color-surface)', borderColor: 'var(--color-border)'}}>
+                    <div className="border-2 rounded-lg p-4" style={{ backgroundColor: 'var(--color-surface)', borderColor: 'var(--color-border)' }}>
                       <div className="flex items-center justify-between mb-2">
-                        <p className="text-sm font-medium" style={{color: 'var(--color-text-secondary)'}}>Claimant Name</p>
-                        <span className="text-xs font-bold" style={{color: 'var(--color-success)'}}>
+                        <p className="text-sm font-medium" style={{ color: 'var(--color-text-secondary)' }}>Claimant Name</p>
+                        <span className="text-xs font-bold" style={{ color: 'var(--color-success)' }}>
                           {extractedData.confidence.name}% confidence
                         </span>
                       </div>
-                      <p className="font-bold text-lg" style={{color: 'var(--color-text-primary)'}}>{extractedData.claimantName}</p>
-                      <div className="w-full rounded-full h-1 mt-2" style={{backgroundColor: 'var(--color-surface-muted)'}}>
+                      <p className="font-bold text-lg" style={{ color: 'var(--color-text-primary)' }}>{extractedData.claimantName}</p>
+                      <div className="w-full rounded-full h-1 mt-2" style={{ backgroundColor: 'var(--color-surface-muted)' }}>
                         <div
                           className="h-1 rounded-full"
-                          style={{ 
+                          style={{
                             width: `${extractedData.confidence.name}%`,
                             backgroundColor: 'var(--color-success)'
                           }}
@@ -1630,18 +1628,18 @@ const AranyaFRASystem: React.FC = () => {
                       </div>
                     </div>
 
-                    <div className="border-2 rounded-lg p-4" style={{backgroundColor: 'var(--color-surface)', borderColor: 'var(--color-border)'}}>
+                    <div className="border-2 rounded-lg p-4" style={{ backgroundColor: 'var(--color-surface)', borderColor: 'var(--color-border)' }}>
                       <div className="flex items-center justify-between mb-2">
-                        <p className="text-sm font-medium" style={{color: 'var(--color-text-secondary)'}}>Father's Name</p>
-                        <span className="text-xs font-bold" style={{color: 'var(--color-success)'}}>
+                        <p className="text-sm font-medium" style={{ color: 'var(--color-text-secondary)' }}>Father's Name</p>
+                        <span className="text-xs font-bold" style={{ color: 'var(--color-success)' }}>
                           {extractedData.confidence.fatherName}% confidence
                         </span>
                       </div>
-                      <p className="font-bold text-lg" style={{color: 'var(--color-text-primary)'}}>{extractedData.fatherName}</p>
-                      <div className="w-full rounded-full h-1 mt-2" style={{backgroundColor: 'var(--color-surface-muted)'}}>
+                      <p className="font-bold text-lg" style={{ color: 'var(--color-text-primary)' }}>{extractedData.fatherName}</p>
+                      <div className="w-full rounded-full h-1 mt-2" style={{ backgroundColor: 'var(--color-surface-muted)' }}>
                         <div
                           className="h-1 rounded-full"
-                          style={{ 
+                          style={{
                             width: `${extractedData.confidence.fatherName}%`,
                             backgroundColor: 'var(--color-success)'
                           }}
@@ -1649,18 +1647,18 @@ const AranyaFRASystem: React.FC = () => {
                       </div>
                     </div>
 
-                    <div className="border-2 rounded-lg p-4" style={{backgroundColor: 'var(--color-surface)', borderColor: 'var(--color-border)'}}>
+                    <div className="border-2 rounded-lg p-4" style={{ backgroundColor: 'var(--color-surface)', borderColor: 'var(--color-border)' }}>
                       <div className="flex items-center justify-between mb-2">
-                        <p className="text-sm font-medium" style={{color: 'var(--color-text-secondary)'}}>Village</p>
-                        <span className="text-xs font-bold" style={{color: 'var(--color-success)'}}>
+                        <p className="text-sm font-medium" style={{ color: 'var(--color-text-secondary)' }}>Village</p>
+                        <span className="text-xs font-bold" style={{ color: 'var(--color-success)' }}>
                           {extractedData.confidence.village}% confidence
                         </span>
                       </div>
-                      <p className="font-bold text-lg" style={{color: 'var(--color-text-primary)'}}>{extractedData.village}</p>
-                      <div className="w-full rounded-full h-1 mt-2" style={{backgroundColor: 'var(--color-surface-muted)'}}>
+                      <p className="font-bold text-lg" style={{ color: 'var(--color-text-primary)' }}>{extractedData.village}</p>
+                      <div className="w-full rounded-full h-1 mt-2" style={{ backgroundColor: 'var(--color-surface-muted)' }}>
                         <div
                           className="h-1 rounded-full"
-                          style={{ 
+                          style={{
                             width: `${extractedData.confidence.village}%`,
                             backgroundColor: 'var(--color-success)'
                           }}
@@ -1668,18 +1666,18 @@ const AranyaFRASystem: React.FC = () => {
                       </div>
                     </div>
 
-                    <div className="border-2 rounded-lg p-4" style={{backgroundColor: 'var(--color-surface)', borderColor: 'var(--color-border)'}}>
+                    <div className="border-2 rounded-lg p-4" style={{ backgroundColor: 'var(--color-surface)', borderColor: 'var(--color-border)' }}>
                       <div className="flex items-center justify-between mb-2">
-                        <p className="text-sm font-medium" style={{color: 'var(--color-text-secondary)'}}>Patta Number</p>
-                        <span className="text-xs font-bold" style={{color: 'var(--color-success)'}}>
+                        <p className="text-sm font-medium" style={{ color: 'var(--color-text-secondary)' }}>Patta Number</p>
+                        <span className="text-xs font-bold" style={{ color: 'var(--color-success)' }}>
                           {extractedData.confidence.pattaNumber}% confidence
                         </span>
                       </div>
-                      <p className="font-bold text-lg" style={{color: 'var(--color-text-primary)'}}>{extractedData.pattaNumber}</p>
-                      <div className="w-full rounded-full h-1 mt-2" style={{backgroundColor: 'var(--color-surface-muted)'}}>
+                      <p className="font-bold text-lg" style={{ color: 'var(--color-text-primary)' }}>{extractedData.pattaNumber}</p>
+                      <div className="w-full rounded-full h-1 mt-2" style={{ backgroundColor: 'var(--color-surface-muted)' }}>
                         <div
                           className="h-1 rounded-full"
-                          style={{ 
+                          style={{
                             width: `${extractedData.confidence.pattaNumber}%`,
                             backgroundColor: 'var(--color-success)'
                           }}
@@ -1687,18 +1685,18 @@ const AranyaFRASystem: React.FC = () => {
                       </div>
                     </div>
 
-                    <div className="border-2 rounded-lg p-4" style={{backgroundColor: 'var(--color-surface)', borderColor: 'var(--color-border)'}}>
+                    <div className="border-2 rounded-lg p-4" style={{ backgroundColor: 'var(--color-surface)', borderColor: 'var(--color-border)' }}>
                       <div className="flex items-center justify-between mb-2">
-                        <p className="text-sm font-medium" style={{color: 'var(--color-text-secondary)'}}>Extent (Hectares)</p>
-                        <span className="text-xs font-bold" style={{color: 'var(--color-success)'}}>
+                        <p className="text-sm font-medium" style={{ color: 'var(--color-text-secondary)' }}>Extent (Hectares)</p>
+                        <span className="text-xs font-bold" style={{ color: 'var(--color-success)' }}>
                           {extractedData.confidence.extent}% confidence
                         </span>
                       </div>
-                      <p className="font-bold text-lg" style={{color: 'var(--color-text-primary)'}}>{extractedData.extent} ha</p>
-                      <div className="w-full rounded-full h-1 mt-2" style={{backgroundColor: 'var(--color-surface-muted)'}}>
+                      <p className="font-bold text-lg" style={{ color: 'var(--color-text-primary)' }}>{extractedData.extent} ha</p>
+                      <div className="w-full rounded-full h-1 mt-2" style={{ backgroundColor: 'var(--color-surface-muted)' }}>
                         <div
                           className="h-1 rounded-full"
-                          style={{ 
+                          style={{
                             width: `${extractedData.confidence.extent}%`,
                             backgroundColor: 'var(--color-success)'
                           }}
@@ -1706,20 +1704,20 @@ const AranyaFRASystem: React.FC = () => {
                       </div>
                     </div>
 
-                    <div className="border-2 rounded-lg p-4" style={{backgroundColor: 'var(--color-surface)', borderColor: 'var(--color-border)'}}>
+                    <div className="border-2 rounded-lg p-4" style={{ backgroundColor: 'var(--color-surface)', borderColor: 'var(--color-border)' }}>
                       <div className="flex items-center justify-between mb-2">
-                        <p className="text-sm font-medium" style={{color: 'var(--color-text-secondary)'}}>Coordinates</p>
-                        <span className="text-xs font-bold" style={{color: 'var(--color-success)'}}>
+                        <p className="text-sm font-medium" style={{ color: 'var(--color-text-secondary)' }}>Coordinates</p>
+                        <span className="text-xs font-bold" style={{ color: 'var(--color-success)' }}>
                           {extractedData.confidence.coordinates}% confidence
                         </span>
                       </div>
-                      <p className="font-bold text-lg" style={{color: 'var(--color-text-primary)'}}>
+                      <p className="font-bold text-lg" style={{ color: 'var(--color-text-primary)' }}>
                         {extractedData.coordinates.lat}°N, {extractedData.coordinates.lng}°E
                       </p>
-                      <div className="w-full rounded-full h-1 mt-2" style={{backgroundColor: 'var(--color-surface-muted)'}}>
+                      <div className="w-full rounded-full h-1 mt-2" style={{ backgroundColor: 'var(--color-surface-muted)' }}>
                         <div
                           className="h-1 rounded-full"
-                          style={{ 
+                          style={{
                             width: `${extractedData.confidence.coordinates}%`,
                             backgroundColor: 'var(--color-success)'
                           }}
@@ -1728,11 +1726,11 @@ const AranyaFRASystem: React.FC = () => {
                     </div>
                   </div>
 
-                  <div className="border-2 rounded-lg p-4" style={{backgroundColor: 'var(--color-surface)', borderColor: 'var(--color-border)'}}>
-                    <p className="text-sm font-medium mb-3" style={{color: 'var(--color-text-secondary)'}}>Extracted Documents</p>
+                  <div className="border-2 rounded-lg p-4" style={{ backgroundColor: 'var(--color-surface)', borderColor: 'var(--color-border)' }}>
+                    <p className="text-sm font-medium mb-3" style={{ color: 'var(--color-text-secondary)' }}>Extracted Documents</p>
                     <div className="flex flex-wrap gap-2">
                       {extractedData.documents.map((doc, idx) => (
-                        <span key={idx} className="px-3 py-1 rounded-full text-sm font-medium flex items-center space-x-1" style={{backgroundColor: 'var(--color-info-light)', color: 'var(--color-info-text)'}}>
+                        <span key={idx} className="px-3 py-1 rounded-full text-sm font-medium flex items-center space-x-1" style={{ backgroundColor: 'var(--color-info-light)', color: 'var(--color-info-text)' }}>
                           <FileText className="w-3 h-3" />
                           <span>{doc}</span>
                         </span>
@@ -1740,10 +1738,10 @@ const AranyaFRASystem: React.FC = () => {
                     </div>
                   </div>
 
-                  <div className="border-2 rounded-xl p-4" style={{backgroundColor: 'var(--color-info-light)', borderColor: 'var(--color-info-border)'}}>
+                  <div className="border-2 rounded-xl p-4" style={{ backgroundColor: 'var(--color-info-light)', borderColor: 'var(--color-info-border)' }}>
                     <div className="flex items-start space-x-3">
-                      <Info className="w-5 h-5 flex-shrink-0 mt-0.5" style={{color: 'var(--color-info)'}} />
-                      <div className="text-sm" style={{color: 'var(--color-info-text)'}}>
+                      <Info className="w-5 h-5 flex-shrink-0 mt-0.5" style={{ color: 'var(--color-info)' }} />
+                      <div className="text-sm" style={{ color: 'var(--color-info-text)' }}>
                         <p className="font-bold mb-1">OCR + NER Technology Stack:</p>
                         <ul className="space-y-1 text-xs">
                           <li><strong>OCR Engine:</strong> Tesseract.js / Google Vision API / AWS Textract</li>

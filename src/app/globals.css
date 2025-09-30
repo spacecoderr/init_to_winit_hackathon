@@ -3,45 +3,77 @@
 /* Global Design Tokens (Government Theme) */
 :root {
   --background: #ffffff;
-  --foreground: #1e293b;              /* Slate 800 - professional dark text */
-  --color-primary: #1e40af;           /* Blue 700 - government blue */
-  --color-primary-dark: #1e3a8a;      /* Blue 800 - darker variant */  
-  --color-primary-light: #3b82f6;     /* Blue 500 - lighter variant */
-  --color-accent: #059669;            /* Emerald 600 - trust & growth */
-  --color-accent-light: #10b981;      /* Emerald 500 - lighter variant */
-  --color-accent-soft: #d1fae5;       /* Emerald 100 - very light */
-  --color-surface: #ffffff;           /* White cards */
-  --color-surface-alt: #f8fafc;       /* Slate 50 - subtle bg */
-  --color-surface-muted: #f1f5f9;     /* Slate 100 - muted sections */
-  --color-border: #cbd5e1;            /* Slate 300 - subtle borders */
-  --color-border-light: #e2e8f0;      /* Slate 200 - lighter borders */
-  --color-text-primary: #1e293b;      /* Slate 800 - main headings */
-  --color-text-secondary: #475569;    /* Slate 600 - body text */
-  --color-text-muted: #64748b;        /* Slate 500 - secondary info */
-  --color-text-light: #94a3b8;        /* Slate 400 - captions/meta */
-  --color-success: #059669;           /* Emerald 600 - success states */
-  --color-success-light: #ecfdf5;     /* Emerald 50 - success bg */
-  --color-success-text: #065f46;      /* Emerald 800 - success text */
-  --color-success-border: #d1fae5;    /* Emerald 100 - success border */
-  --color-warning: #d97706;           /* Amber 600 - warning states */
-  --color-warning-light: #fffbeb;     /* Amber 50 - warning bg */
-  --color-warning-text: #92400e;      /* Amber 800 - warning text */
-  --color-warning-border: #fde68a;    /* Amber 200 - warning border */
-  --color-danger: #dc2626;            /* Red 600 - error states */
-  --color-danger-light: #fef2f2;      /* Red 50 - error bg */
-  --color-danger-text: #991b1b;       /* Red 800 - danger text */
-  --color-danger-border: #fecaca;     /* Red 200 - danger border */
-  --color-info: #0284c7;              /* Sky 600 - info states */
-  --color-info-light: #f0f9ff;        /* Sky 50 - info bg */
-  --color-info-text: #0c4a6e;         /* Sky 900 - info text */
-  --color-info-border: #e0f2fe;       /* Sky 100 - info border */
+  --foreground: #1e293b;
+  /* Slate 800 - professional dark text */
+  --color-primary: #1e40af;
+  /* Blue 700 - government blue */
+  --color-primary-dark: #1e3a8a;
+  /* Blue 800 - darker variant */
+  --color-primary-light: #3b82f6;
+  /* Blue 500 - lighter variant */
+  --color-accent: #059669;
+  /* Emerald 600 - trust & growth */
+  --color-accent-light: #10b981;
+  /* Emerald 500 - lighter variant */
+  --color-accent-soft: #d1fae5;
+  /* Emerald 100 - very light */
+  --color-surface: #ffffff;
+  /* White cards */
+  --color-surface-alt: #f8fafc;
+  /* Slate 50 - subtle bg */
+  --color-surface-muted: #f1f5f9;
+  /* Slate 100 - muted sections */
+  --color-border: #cbd5e1;
+  /* Slate 300 - subtle borders */
+  --color-border-light: #e2e8f0;
+  /* Slate 200 - lighter borders */
+  --color-text-primary: #1e293b;
+  /* Slate 800 - main headings */
+  --color-text-secondary: #475569;
+  /* Slate 600 - body text */
+  --color-text-muted: #64748b;
+  /* Slate 500 - secondary info */
+  --color-text-light: #94a3b8;
+  /* Slate 400 - captions/meta */
+  --color-success: #059669;
+  /* Emerald 600 - success states */
+  --color-success-light: #ecfdf5;
+  /* Emerald 50 - success bg */
+  --color-success-text: #065f46;
+  /* Emerald 800 - success text */
+  --color-success-border: #d1fae5;
+  /* Emerald 100 - success border */
+  --color-warning: #d97706;
+  /* Amber 600 - warning states */
+  --color-warning-light: #fffbeb;
+  /* Amber 50 - warning bg */
+  --color-warning-text: #92400e;
+  /* Amber 800 - warning text */
+  --color-warning-border: #fde68a;
+  /* Amber 200 - warning border */
+  --color-danger: #dc2626;
+  /* Red 600 - error states */
+  --color-danger-light: #fef2f2;
+  /* Red 50 - error bg */
+  --color-danger-text: #991b1b;
+  /* Red 800 - danger text */
+  --color-danger-border: #fecaca;
+  /* Red 200 - danger border */
+  --color-info: #0284c7;
+  /* Sky 600 - info states */
+  --color-info-light: #f0f9ff;
+  /* Sky 50 - info bg */
+  --color-info-text: #0c4a6e;
+  /* Sky 900 - info text */
+  --color-info-border: #e0f2fe;
+  /* Sky 100 - info border */
   --radius-sm: 4px;
   --radius-md: 8px;
   --radius-lg: 12px;
-  --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
-  --shadow-md: 0 1px 3px rgba(0,0,0,0.1), 0 1px 2px rgba(0,0,0,0.06);
-  --shadow-lg: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06);
-  --focus-ring: 0 0 0 3px rgba(30,64,175,0.3);
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --focus-ring: 0 0 0 3px rgba(30, 64, 175, 0.3);
 }
 
 /* Mapping CSS custom props for fonts (used by next/font) */
@@ -71,7 +103,8 @@ body {
   }
 }
 
-html, body {
+html,
+body {
   background: var(--color-surface-alt);
   color: var(--color-text-primary);
   font-family: var(--font-geist-sans), system-ui, Arial, Helvetica, sans-serif;
@@ -105,6 +138,7 @@ html, body {
   box-shadow: var(--shadow-sm);
   transition: border-color .18s ease, box-shadow .18s ease, transform .18s ease;
 }
+
 .gov-card:hover {
   border-color: var(--color-primary);
   box-shadow: var(--shadow-md);
@@ -139,10 +173,29 @@ html, body {
   border: 1px solid var(--color-border);
 }
 
-.gov-badge.success { background: var(--color-success-light); color: var(--color-success); border-color: var(--color-success); }
-.gov-badge.warning { background: var(--color-warning-light); color: var(--color-warning); border-color: var(--color-warning); }
-.gov-badge.danger { background: var(--color-danger-light); color: var(--color-danger); border-color: var(--color-danger); }
-.gov-badge.info { background: var(--color-info-light); color: var(--color-info); border-color: var(--color-info); }
+.gov-badge.success {
+  background: var(--color-success-light);
+  color: var(--color-success);
+  border-color: var(--color-success);
+}
+
+.gov-badge.warning {
+  background: var(--color-warning-light);
+  color: var(--color-warning);
+  border-color: var(--color-warning);
+}
+
+.gov-badge.danger {
+  background: var(--color-danger-light);
+  color: var(--color-danger);
+  border-color: var(--color-danger);
+}
+
+.gov-badge.info {
+  background: var(--color-info-light);
+  color: var(--color-info);
+  border-color: var(--color-info);
+}
 
 .gov-focus:focus-visible {
   outline: none;
@@ -161,12 +214,21 @@ html, body {
   align-items: center;
   transition: color .18s ease;
 }
-.gov-tab:hover { color: var(--color-primary); }
-.gov-tab.active { color: var(--color-primary); }
+
+.gov-tab:hover {
+  color: var(--color-primary);
+}
+
+.gov-tab.active {
+  color: var(--color-primary);
+}
+
 .gov-tab.active::after {
   content: "";
   position: absolute;
-  left: 0; right: 0; bottom: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
   height: 3px;
   background: var(--color-primary);
   border-radius: 2px 2px 0 0;
@@ -189,15 +251,30 @@ html, body {
   transition: background .2s ease, transform .2s ease, box-shadow .2s ease;
   box-shadow: var(--shadow-sm);
 }
-.gov-btn:hover { background: var(--btn-bg-hover); }
-.gov-btn:active { transform: translateY(1px); }
+
+.gov-btn:hover {
+  background: var(--btn-bg-hover);
+}
+
+.gov-btn:active {
+  transform: translateY(1px);
+}
+
 .gov-btn.outline {
   background: #fff;
   color: var(--color-primary);
   border: 1px solid var(--color-border);
 }
-.gov-btn.outline:hover { border-color: var(--color-primary); background: #f8fafc; }
-.gov-btn.accent { --btn-bg: var(--color-accent); --btn-bg-hover: #d97706; }
+
+.gov-btn.outline:hover {
+  border-color: var(--color-primary);
+  background: #f8fafc;
+}
+
+.gov-btn.accent {
+  --btn-bg: var(--color-accent);
+  --btn-bg-hover: #d97706;
+}
 
 /* Simplified table styles */
 table.gov-table thead th {
@@ -205,30 +282,68 @@ table.gov-table thead th {
   letter-spacing: .75px;
   font-weight: 600;
   text-transform: uppercase;
-  color: #64748b; /* slate-500 */
+  color: #64748b;
+  /* slate-500 */
   background: var(--color-surface-alt);
 }
 
 /* Scrollbars (Webkit) */
-*::-webkit-scrollbar { width: 10px; height: 10px; }
-*::-webkit-scrollbar-track { background: var(--color-surface-alt); }
-*::-webkit-scrollbar-thumb { background: #c1ccd6; border-radius: 20px; border: 2px solid var(--color-surface-alt); }
-*::-webkit-scrollbar-thumb:hover { background: #98a6b5; }
+*::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+*::-webkit-scrollbar-track {
+  background: var(--color-surface-alt);
+}
+
+*::-webkit-scrollbar-thumb {
+  background: #c1ccd6;
+  border-radius: 20px;
+  border: 2px solid var(--color-surface-alt);
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background: #98a6b5;
+}
 
 /* Responsive adjustments */
 @media (max-width: 860px) {
-  .gov-tab { padding: .75rem .85rem; font-size: .85rem; }
-  .gov-header-title { font-size: 1.15rem; }
+  .gov-tab {
+    padding: .75rem .85rem;
+    font-size: .85rem;
+  }
+
+  .gov-header-title {
+    font-size: 1.15rem;
+  }
 }
 
 /* Accessibility helper */
 .skip-link {
-  position: absolute; left: -999px; top: auto; width: 1px; height: 1px; overflow: hidden;
+  position: absolute;
+  left: -999px;
+  top: auto;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
 }
-.skip-link:focus { position: static; width: auto; height: auto; padding: .5rem 1rem; background: var(--color-primary); color: #fff; border-radius: var(--radius-sm); }
+
+.skip-link:focus {
+  position: static;
+  width: auto;
+  height: auto;
+  padding: .5rem 1rem;
+  background: var(--color-primary);
+  color: #fff;
+  border-radius: var(--radius-sm);
+}
 
 /* Reduce existing gradient noise by neutralizing generic gradient util (optional) */
-.bg-gradient-to-r, .bg-gradient-to-br { background-image: none !important; }
+.bg-gradient-to-r,
+.bg-gradient-to-br {
+  background-image: none !important;
+}
 
 /* Leaflet Map Styling */
 .leaflet-container {
@@ -267,4 +382,3 @@ table.gov-table thead th {
   background: rgba(255, 255, 255, 0.8);
   font-size: 10px;
 }
-

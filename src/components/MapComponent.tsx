@@ -204,8 +204,8 @@ const MapComponent: React.FC<MapComponentProps> = ({
   }, [claims]);
 
   const handleLayerToggle = (layer: string) => {
-    setActiveLayers(prev => 
-      prev.includes(layer) 
+    setActiveLayers(prev =>
+      prev.includes(layer)
         ? prev.filter(l => l !== layer)
         : [...prev, layer]
     );
@@ -216,7 +216,7 @@ const MapComponent: React.FC<MapComponentProps> = ({
   };
 
   const handleSearch = (query: string) => {
-    const filtered = claims.filter(claim => 
+    const filtered = claims.filter(claim =>
       claim.claimantName.toLowerCase().includes(query.toLowerCase()) ||
       claim.village.toLowerCase().includes(query.toLowerCase()) ||
       claim.pattaNumber.toLowerCase().includes(query.toLowerCase())
@@ -278,7 +278,7 @@ const MapComponent: React.FC<MapComponentProps> = ({
 
   if (!isClient || !mapReady) {
     return (
-      <div 
+      <div
         className="w-full h-full flex items-center justify-center rounded-lg"
         style={{ backgroundColor: 'var(--color-surface-muted)', minHeight: '400px' }}
       >
@@ -299,7 +299,7 @@ const MapComponent: React.FC<MapComponentProps> = ({
         onLayerToggle={handleLayerToggle}
         onViewChange={handleViewChange}
       />
-      
+
       {/* Search Bar */}
       <MapSearchBar
         onSearch={handleSearch}
@@ -399,7 +399,7 @@ const MapComponent: React.FC<MapComponentProps> = ({
       </MapContainer>
 
       {/* Map Legend */}
-      <div 
+      <div
         className="absolute bottom-4 right-4 p-3 rounded-lg shadow-lg z-10"
         style={{ backgroundColor: 'var(--color-surface)', border: '1px solid var(--color-border)' }}
       >
@@ -409,7 +409,7 @@ const MapComponent: React.FC<MapComponentProps> = ({
             {filteredClaims.length} of {claims.length} claims
           </span>
         </div>
-        
+
         {/* Claim Status Legend */}
         <div className="mb-3">
           <p className="text-xs font-medium mb-1" style={{ color: 'var(--color-text-secondary)' }}>Claim Status:</p>
@@ -421,8 +421,8 @@ const MapComponent: React.FC<MapComponentProps> = ({
               { status: 'rejected', label: 'Rejected', color: '#ef4444' },
             ].map(({ status, label, color }) => (
               <div key={status} className="flex items-center space-x-2">
-                <div 
-                  className="w-3 h-3 rounded-full" 
+                <div
+                  className="w-3 h-3 rounded-full"
                   style={{ backgroundColor: color }}
                 ></div>
                 <span className="text-xs" style={{ color: 'var(--color-text-primary)' }}>{label}</span>
@@ -441,8 +441,8 @@ const MapComponent: React.FC<MapComponentProps> = ({
               { type: 'community', label: 'Community', color: '#65a30d' },
             ].map(({ type, label, color }) => (
               <div key={type} className="flex items-center space-x-2">
-                <div 
-                  className="w-3 h-2 border" 
+                <div
+                  className="w-3 h-2 border"
                   style={{ backgroundColor: color, opacity: 0.3, borderColor: color }}
                 ></div>
                 <span className="text-xs" style={{ color: 'var(--color-text-primary)' }}>{label}</span>
@@ -453,7 +453,7 @@ const MapComponent: React.FC<MapComponentProps> = ({
       </div>
 
       {/* Map Status Info */}
-      <div 
+      <div
         className="absolute bottom-4 left-4 p-3 rounded-lg shadow-lg"
         style={{ backgroundColor: 'var(--color-surface)', color: 'var(--color-text-secondary)', border: '1px solid var(--color-border)' }}
       >

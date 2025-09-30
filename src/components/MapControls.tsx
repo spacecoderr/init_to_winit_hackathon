@@ -50,7 +50,7 @@ const MapControlPanel: React.FC<MapControlPanelProps> = ({
         </button>
 
         {showLayerPanel && (
-          <div 
+          <div
             className="absolute top-12 left-0 w-64 p-4 rounded-lg shadow-xl border z-30"
             style={{
               backgroundColor: 'var(--color-surface)',
@@ -81,9 +81,8 @@ const MapControlPanel: React.FC<MapControlPanelProps> = ({
               <div className="space-y-1">
                 <button
                   onClick={() => onViewChange('street')}
-                  className={`w-full text-left px-2 py-1 rounded text-sm transition ${
-                    activeView === 'street' ? 'font-medium' : ''
-                  }`}
+                  className={`w-full text-left px-2 py-1 rounded text-sm transition ${activeView === 'street' ? 'font-medium' : ''
+                    }`}
                   style={{
                     backgroundColor: activeView === 'street' ? 'var(--color-primary-light)' : 'transparent',
                     color: activeView === 'street' ? 'white' : 'var(--color-text-primary)'
@@ -93,9 +92,8 @@ const MapControlPanel: React.FC<MapControlPanelProps> = ({
                 </button>
                 <button
                   onClick={() => onViewChange('satellite')}
-                  className={`w-full text-left px-2 py-1 rounded text-sm transition ${
-                    activeView === 'satellite' ? 'font-medium' : ''
-                  }`}
+                  className={`w-full text-left px-2 py-1 rounded text-sm transition ${activeView === 'satellite' ? 'font-medium' : ''
+                    }`}
                   style={{
                     backgroundColor: activeView === 'satellite' ? 'var(--color-primary-light)' : 'transparent',
                     color: activeView === 'satellite' ? 'white' : 'var(--color-text-primary)'
@@ -125,7 +123,7 @@ const MapControlPanel: React.FC<MapControlPanelProps> = ({
         </button>
 
         {showToolsPanel && (
-          <div 
+          <div
             className="absolute top-12 left-0 w-56 p-4 rounded-lg shadow-xl border z-30"
             style={{
               backgroundColor: 'var(--color-surface)',
@@ -209,7 +207,7 @@ const MapSearchBar: React.FC<MapSearchBarProps> = ({ onSearch, onFilterChange })
 
         {/* Filter Panel */}
         {showFilters && (
-          <div 
+          <div
             className="p-4 rounded-lg shadow-xl border"
             style={{
               backgroundColor: 'var(--color-surface)',
@@ -217,13 +215,13 @@ const MapSearchBar: React.FC<MapSearchBarProps> = ({ onSearch, onFilterChange })
             }}
           >
             <h4 className="font-bold mb-3 text-sm" style={{ color: 'var(--color-text-primary)' }}>Filter Claims</h4>
-            
+
             <div className="space-y-3">
               <div>
                 <label className="block text-xs font-medium mb-1" style={{ color: 'var(--color-text-secondary)' }}>
                   Status
                 </label>
-                <select 
+                <select
                   className="w-full px-2 py-1 rounded border text-sm"
                   style={{
                     backgroundColor: 'var(--color-surface)',
@@ -244,8 +242,8 @@ const MapSearchBar: React.FC<MapSearchBarProps> = ({ onSearch, onFilterChange })
                   Area Range (hectares)
                 </label>
                 <div className="flex space-x-2">
-                  <input 
-                    type="number" 
+                  <input
+                    type="number"
                     placeholder="Min"
                     className="flex-1 px-2 py-1 rounded border text-sm"
                     style={{
@@ -254,8 +252,8 @@ const MapSearchBar: React.FC<MapSearchBarProps> = ({ onSearch, onFilterChange })
                       color: 'var(--color-text-primary)'
                     }}
                   />
-                  <input 
-                    type="number" 
+                  <input
+                    type="number"
                     placeholder="Max"
                     className="flex-1 px-2 py-1 rounded border text-sm"
                     style={{
@@ -271,7 +269,7 @@ const MapSearchBar: React.FC<MapSearchBarProps> = ({ onSearch, onFilterChange })
                 <label className="block text-xs font-medium mb-1" style={{ color: 'var(--color-text-secondary)' }}>
                   Village
                 </label>
-                <select 
+                <select
                   className="w-full px-2 py-1 rounded border text-sm"
                   style={{
                     backgroundColor: 'var(--color-surface)',
