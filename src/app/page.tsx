@@ -1,9 +1,9 @@
-import VanMitraFRASystem from '@/components/VanMitraFRASystem';
+import AranyaFRASystem from '@/components/AranyaFRASystem';
 
 export default function Home() {
   return (
     <main>
-      <VanMitraFRASystem />
+      <AranyaFRASystem />
     </main>
   );
 }
