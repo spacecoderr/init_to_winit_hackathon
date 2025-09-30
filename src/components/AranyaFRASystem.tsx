@@ -1,6 +1,6 @@
 "use client"
 import React, { useState } from 'react';
-import { MapPin, FileText, CheckCircle, Clock, AlertCircle, Upload, Search, Filter, ChevronRight, Layers, TrendingUp, Droplets, Cloud, Users, Brain, Target, Zap, Database, ChevronDown, Info, Award } from 'lucide-react';
+import { MapPin, FileText, CheckCircle, Clock, AlertCircle, AlertTriangle, XCircle, Upload, Search, Filter, ChevronRight, Layers, TrendingUp, Droplets, Cloud, Users, Brain, Target, Zap, Database, ChevronDown, Info, Award } from 'lucide-react';
 import { FRAClaim, MapClaim, ForestArea, convertFRAClaimToMapClaim } from '../types';
 
 // Import components dynamically to avoid SSR issues with map
@@ -700,33 +700,115 @@ const AranyaFRASystem: React.FC = () => {
 
             <div className="gov-card overflow-hidden">
               <div className="pb-4 mb-4 border-b border-[var(--color-border)]">
-                <h2 className="gov-section-title">Claims Distribution Overview</h2>
+                <div className="flex items-center justify-between">
+                  <h2 className="gov-section-title">Claims Distribution Overview</h2>
+                  <div className="flex items-center space-x-4">
+                    <div className="flex items-center space-x-1">
+                      <div className="w-3 h-3 rounded-full bg-green-500"></div>
+                      <span className="text-xs font-medium" style={{color: 'var(--color-text-secondary)'}}>Approved ({claimsData.filter(c => c.status === 'approved').length})</span>
+                    </div>
+                    <div className="flex items-center space-x-1">
+                      <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
+                      <span className="text-xs font-medium" style={{color: 'var(--color-text-secondary)'}}>Pending ({claimsData.filter(c => c.status === 'pending').length})</span>
+                    </div>
+                    <div className="flex items-center space-x-1">
+                      <div className="w-3 h-3 rounded-full bg-orange-500"></div>
+                      <span className="text-xs font-medium" style={{color: 'var(--color-text-secondary)'}}>Review ({claimsData.filter(c => c.status === 'review').length})</span>
+                    </div>
+                  </div>
+                </div>
               </div>
-              <div className="relative h-96 bg-[var(--color-surface-alt)] rounded-md">
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="relative w-full h-full">
-                    {claimsData.map((claim, idx) => (
-                      <div
-                        key={claim.id}
-                        className="absolute"
-                        style={{
-                          left: `${20 + idx * 15}%`,
-                          top: `${30 + (idx % 3) * 20}%`
-                        }}
-                      >
-                        <div className={`w-8 h-8 rounded-full flex items-center justify-center shadow-lg cursor-pointer transform hover:scale-110 transition ${
-                          claim.status === 'approved' ? 'bg-green-500' :
-                          claim.status === 'pending' ? 'bg-yellow-500' :
-                          'bg-orange-500'
-                        }`}>
-                          <MapPin className="w-5 h-5 text-white" />
+              <div className="grid md:grid-cols-3 gap-6">
+                {/* Regional Map Visualization */}
+                <div className="md:col-span-2">
+                  <div className="relative h-80 bg-gradient-to-br from-green-50 to-green-100 rounded-xl border-2 border-green-200 overflow-hidden">
+                    <div className="absolute inset-0 opacity-20">
+                      <div className="w-full h-full bg-green-100 opacity-50"></div>
+                    </div>
+                    <div className="absolute top-4 left-4 px-3 py-1 rounded-full text-sm font-semibold" style={{backgroundColor: 'var(--color-surface)', color: 'var(--color-text-primary)', border: '1px solid var(--color-border)'}}>
+                      Tripura Forest Region
+                    </div>
+                    <div className="relative w-full h-full">
+                      {claimsData.map((claim, idx) => (
+                        <div
+                          key={claim.id}
+                          className="absolute group cursor-pointer"
+                          style={{
+                            left: `${15 + idx * 16}%`,
+                            top: `${25 + (idx % 3) * 25}%`
+                          }}
+                        >
+                          <div className={`w-10 h-10 rounded-full flex items-center justify-center shadow-lg transform hover:scale-125 transition-all duration-200 ${
+                            claim.status === 'approved' ? 'bg-green-500 hover:bg-green-600' :
+                            claim.status === 'pending' ? 'bg-yellow-500 hover:bg-yellow-600' :
+                            'bg-orange-500 hover:bg-orange-600'
+                          }`}>
+                            <MapPin className="w-5 h-5 text-white" />
+                          </div>
+                          <div className="absolute top-12 left-1/2 transform -translate-x-1/2 px-3 py-2 rounded-lg shadow-xl opacity-0 group-hover:opacity-100 transition-opacity z-10" 
+                               style={{backgroundColor: 'var(--color-surface)', border: '2px solid var(--color-border)', color: 'var(--color-text-primary)'}}>
+                            <div className="text-sm font-bold">{claim.village}</div>
+                            <div className="text-xs" style={{color: 'var(--color-text-secondary)'}}>
+                              {claim.claimantName}
+                            </div>
+                            <div className="text-xs font-semibold mt-1">
+                              {claim.extent} acres • {claim.status}
+                            </div>
+                          </div>
                         </div>
-                        <div className="absolute top-10 left-1/2 transform -translate-x-1/2 px-2 py-1 rounded shadow text-xs whitespace-nowrap" 
-                             style={{backgroundColor: 'var(--color-surface)', border: '1px solid var(--color-border)', color: 'var(--color-text-primary)'}}>
-                          {claim.village}
-                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+                
+                {/* Claims Summary Stats */}
+                <div className="space-y-4">
+                  <div className="p-4 rounded-xl border-2 transition-all hover:shadow-md" style={{backgroundColor: 'var(--color-surface)', borderColor: 'var(--color-success-border)'}}>
+                    <div className="flex items-center space-x-3">
+                      <div className="p-2 rounded-lg" style={{backgroundColor: 'var(--color-success-light)'}}>
+                        <CheckCircle className="w-5 h-5" style={{color: 'var(--color-success)'}} />
                       </div>
-                    ))}
+                      <div>
+                        <div className="text-2xl font-bold" style={{color: 'var(--color-success)'}}>{claimsData.filter(c => c.status === 'approved').length}</div>
+                        <div className="text-sm font-medium" style={{color: 'var(--color-text-secondary)'}}>Approved Claims</div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="p-4 rounded-xl border-2 transition-all hover:shadow-md" style={{backgroundColor: 'var(--color-surface)', borderColor: 'var(--color-warning-border)'}}>
+                    <div className="flex items-center space-x-3">
+                      <div className="p-2 rounded-lg" style={{backgroundColor: 'var(--color-warning-light)'}}>
+                        <Clock className="w-5 h-5" style={{color: 'var(--color-warning)'}} />
+                      </div>
+                      <div>
+                        <div className="text-2xl font-bold" style={{color: 'var(--color-warning)'}}>{claimsData.filter(c => c.status === 'pending').length}</div>
+                        <div className="text-sm font-medium" style={{color: 'var(--color-text-secondary)'}}>Pending Review</div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="p-4 rounded-xl border-2 transition-all hover:shadow-md" style={{backgroundColor: 'var(--color-surface)', borderColor: 'var(--color-info-border)'}}>
+                    <div className="flex items-center space-x-3">
+                      <div className="p-2 rounded-lg" style={{backgroundColor: 'var(--color-info-light)'}}>
+                        <Target className="w-5 h-5" style={{color: 'var(--color-info)'}} />
+                      </div>
+                      <div>
+                        <div className="text-2xl font-bold" style={{color: 'var(--color-info)'}}>{claimsData.reduce((sum, c) => sum + c.extent, 0).toLocaleString()}</div>
+                        <div className="text-sm font-medium" style={{color: 'var(--color-text-secondary)'}}>Total Acres</div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="p-4 rounded-xl border-2 transition-all hover:shadow-md" style={{backgroundColor: 'var(--color-surface)', borderColor: 'var(--color-primary-border)'}}>
+                    <div className="flex items-center space-x-3">
+                      <div className="p-2 rounded-lg" style={{backgroundColor: 'var(--color-primary-light)'}}>
+                        <Users className="w-5 h-5" style={{color: 'var(--color-primary)'}} />
+                      </div>
+                      <div>
+                        <div className="text-2xl font-bold" style={{color: 'var(--color-primary)'}}>{claimsData.length}</div>
+                        <div className="text-sm font-medium" style={{color: 'var(--color-text-secondary)'}}>Active Villages</div>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -835,11 +917,37 @@ const AranyaFRASystem: React.FC = () => {
             </div>
 
             {analyzing && (
-              <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-12">
+              <div className="p-12 rounded-xl border-2" style={{ backgroundColor: 'var(--color-surface)', borderColor: 'var(--color-border)' }}>
                 <div className="text-center">
-                  <div className="inline-block animate-spin rounded-full h-16 w-16 border-b-2 border-green-600 mb-4"></div>
-                  <h3 className="text-xl font-bold text-gray-900 mb-2">AI Analysis in Progress</h3>
-                  <p className="text-gray-600">Processing village data and matching with scheme indicators...</p>
+                  <div className="relative inline-block mb-6">
+                    <div className="animate-spin rounded-full h-16 w-16 border-4 border-t-transparent" style={{ borderColor: 'var(--color-primary)', borderTopColor: 'transparent' }}></div>
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <Brain className="w-6 h-6" style={{ color: 'var(--color-primary)' }} />
+                    </div>
+                  </div>
+                  <h3 className="text-2xl font-bold mb-3 flex items-center justify-center space-x-2" style={{ color: 'var(--color-text-primary)' }}>
+                    <span>AI Analysis in Progress</span>
+                    <div className="px-2 py-1 rounded-full text-xs font-semibold animate-pulse" style={{ backgroundColor: 'var(--color-primary)', color: 'white' }}>
+                      PROCESSING
+                    </div>
+                  </h3>
+                  <p className="text-base leading-relaxed mb-4" style={{ color: 'var(--color-text-primary)' }}>
+                    Processing village data and matching with scheme indicators...
+                  </p>
+                  <div className="flex items-center justify-center space-x-4 text-sm" style={{ color: 'var(--color-text-secondary)' }}>
+                    <div className="flex items-center space-x-2">
+                      <div className="w-2 h-2 rounded-full animate-pulse" style={{ backgroundColor: 'var(--color-success)' }}></div>
+                      <span>Analyzing Indicators</span>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <div className="w-2 h-2 rounded-full animate-pulse" style={{ backgroundColor: 'var(--color-warning)', animationDelay: '0.5s' }}></div>
+                      <span>Matching Schemes</span>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <div className="w-2 h-2 rounded-full animate-pulse" style={{ backgroundColor: 'var(--color-info)', animationDelay: '1s' }}></div>
+                      <span>Generating Report</span>
+                    </div>
+                  </div>
                 </div>
               </div>
             )}
@@ -900,35 +1008,35 @@ const AranyaFRASystem: React.FC = () => {
 
                     <div className="p-8 space-y-8">
                       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                        <div className="p-6 rounded-xl border-2 transition-all hover:shadow-md" style={{ backgroundColor: 'var(--color-success-light)', borderColor: 'var(--color-success-border)' }}>
+                        <div className="p-6 rounded-xl border-2 transition-all hover:shadow-md" style={{ backgroundColor: 'var(--color-surface)', borderColor: 'var(--color-border)' }}>
                           <div className="flex items-center space-x-3 mb-3">
                             <div className="p-2 rounded-lg" style={{ backgroundColor: 'var(--color-success)' }}>
                               <Users className="w-5 h-5 text-white" />
                             </div>
-                            <p className="text-sm font-semibold" style={{ color: 'var(--color-text-secondary)' }}>Estimated Beneficiaries</p>
+                            <p className="text-sm font-semibold" style={{ color: 'var(--color-text-primary)' }}>Estimated Beneficiaries</p>
                           </div>
                           <p className="text-3xl font-bold mb-1" style={{ color: 'var(--color-success)' }}>{rec.estimatedBeneficiaries.toLocaleString()}</p>
-                          <p className="text-sm font-medium" style={{ color: 'var(--color-text-muted)' }}>people will benefit</p>
+                          <p className="text-sm font-medium" style={{ color: 'var(--color-text-secondary)' }}>people will benefit</p>
                         </div>
-                        <div className="p-6 rounded-xl border-2 transition-all hover:shadow-md" style={{ backgroundColor: 'var(--color-info-light)', borderColor: 'var(--color-info-border)' }}>
+                        <div className="p-6 rounded-xl border-2 transition-all hover:shadow-md" style={{ backgroundColor: 'var(--color-surface)', borderColor: 'var(--color-border)' }}>
                           <div className="flex items-center space-x-3 mb-3">
                             <div className="p-2 rounded-lg" style={{ backgroundColor: 'var(--color-info)' }}>
                               <Target className="w-5 h-5 text-white" />
                             </div>
-                            <p className="text-sm font-semibold" style={{ color: 'var(--color-text-secondary)' }}>Implementation</p>
+                            <p className="text-sm font-semibold" style={{ color: 'var(--color-text-primary)' }}>Implementation</p>
                           </div>
                           <p className="text-3xl font-bold mb-1" style={{ color: 'var(--color-info)' }}>{rec.implementationComplexity}</p>
-                          <p className="text-sm font-medium" style={{ color: 'var(--color-text-muted)' }}>complexity level</p>
+                          <p className="text-sm font-medium" style={{ color: 'var(--color-text-secondary)' }}>complexity level</p>
                         </div>
-                        <div className="p-6 rounded-xl border-2 transition-all hover:shadow-md" style={{ backgroundColor: 'var(--color-surface-alt)', borderColor: 'var(--color-border)' }}>
+                        <div className="p-6 rounded-xl border-2 transition-all hover:shadow-md" style={{ backgroundColor: 'var(--color-surface)', borderColor: 'var(--color-border)' }}>
                           <div className="flex items-center space-x-3 mb-3">
                             <div className="p-2 rounded-lg" style={{ backgroundColor: 'var(--color-primary)' }}>
                               <Database className="w-5 h-5 text-white" />
                             </div>
-                            <p className="text-sm font-semibold" style={{ color: 'var(--color-text-secondary)' }}>Budget Allocation</p>
+                            <p className="text-sm font-semibold" style={{ color: 'var(--color-text-primary)' }}>Budget Allocation</p>
                           </div>
                           <p className="text-2xl font-bold mb-1" style={{ color: 'var(--color-primary)' }}>{rec.details.budget}</p>
-                          <p className="text-sm font-medium" style={{ color: 'var(--color-text-muted)' }}>total allocation</p>
+                          <p className="text-sm font-medium" style={{ color: 'var(--color-text-secondary)' }}>total allocation</p>
                         </div>
                       </div>
 
@@ -1048,33 +1156,60 @@ const AranyaFRASystem: React.FC = () => {
                   </div>
                 ))}
 
-                <div className="bg-blue-50 border-2 border-blue-200 rounded-xl p-6">
-                  <div className="flex items-start space-x-3">
-                    <Info className="w-6 h-6 text-blue-600 flex-shrink-0 mt-1" />
-                    <div>
-                      <h4 className="font-bold text-blue-900 mb-2">Cost-Effective RAG Implementation</h4>
-                      <p className="text-sm text-blue-800 mb-3">
+                <div className="p-8 rounded-xl border-2 transition-all hover:shadow-lg" style={{ backgroundColor: 'var(--color-surface)', borderColor: 'var(--color-border)' }}>
+                  <div className="flex items-start space-x-4">
+                    <div className="p-3 rounded-xl" style={{ backgroundColor: 'var(--color-info)' }}>
+                      <Info className="w-7 h-7 text-white" />
+                    </div>
+                    <div className="flex-1">
+                      <h4 className="font-bold text-xl mb-3 flex items-center space-x-2" style={{ color: 'var(--color-text-primary)' }}>
+                        <span>Cost-Effective RAG Implementation</span>
+                        <div className="px-2 py-1 rounded-full text-xs font-semibold" style={{ backgroundColor: 'var(--color-success)', color: 'white' }}>
+                          AI-Powered
+                        </div>
+                      </h4>
+                      <p className="text-base mb-4 leading-relaxed" style={{ color: 'var(--color-text-primary)' }}>
                         This system uses Retrieval-Augmented Generation (RAG) to match village-level socio-economic 
-                        indicators with government scheme criteria stored in our knowledge base. This approach is:
+                        indicators with government scheme criteria stored in our knowledge base. This approach delivers:
                       </p>
-                      <ul className="space-y-1 text-sm text-blue-800">
-                        <li className="flex items-start space-x-2">
-                          <span className="font-bold">•</span>
-                          <span><strong>Cost-effective:</strong> No expensive LLM API calls - uses local vector matching</span>
-                        </li>
-                        <li className="flex items-start space-x-2">
-                          <span className="font-bold">•</span>
-                          <span><strong>Fast:</strong> Instant recommendations without external API latency</span>
-                        </li>
-                        <li className="flex items-start space-x-2">
-                          <span className="font-bold">•</span>
-                          <span><strong>Transparent:</strong> Clear reasoning based on indicator matching</span>
-                        </li>
-                        <li className="flex items-start space-x-2">
-                          <span className="font-bold">•</span>
-                          <span><strong>Scalable:</strong> Easily expandable knowledge base with new schemes</span>
-                        </li>
-                      </ul>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="flex items-start space-x-3 p-4 rounded-lg transition-all hover:shadow-sm" style={{ backgroundColor: 'var(--color-surface-alt)' }}>
+                          <div className="p-1 rounded-full mt-1" style={{ backgroundColor: 'var(--color-success)' }}>
+                            <Database className="w-3 h-3 text-white" />
+                          </div>
+                          <div>
+                            <span className="font-semibold text-sm" style={{ color: 'var(--color-text-primary)' }}>Cost-effective:</span>
+                            <p className="text-sm" style={{ color: 'var(--color-text-primary)' }}>No expensive LLM API calls - uses local vector matching</p>
+                          </div>
+                        </div>
+                        <div className="flex items-start space-x-3 p-4 rounded-lg transition-all hover:shadow-sm" style={{ backgroundColor: 'var(--color-surface-alt)' }}>
+                          <div className="p-1 rounded-full mt-1" style={{ backgroundColor: 'var(--color-warning)' }}>
+                            <Zap className="w-3 h-3 text-white" />
+                          </div>
+                          <div>
+                            <span className="font-semibold text-sm" style={{ color: 'var(--color-text-primary)' }}>Fast:</span>
+                            <p className="text-sm" style={{ color: 'var(--color-text-primary)' }}>Instant recommendations without external API latency</p>
+                          </div>
+                        </div>
+                        <div className="flex items-start space-x-3 p-4 rounded-lg transition-all hover:shadow-sm" style={{ backgroundColor: 'var(--color-surface-alt)' }}>
+                          <div className="p-1 rounded-full mt-1" style={{ backgroundColor: 'var(--color-info)' }}>
+                            <Brain className="w-3 h-3 text-white" />
+                          </div>
+                          <div>
+                            <span className="font-semibold text-sm" style={{ color: 'var(--color-text-primary)' }}>Transparent:</span>
+                            <p className="text-sm" style={{ color: 'var(--color-text-primary)' }}>Clear reasoning based on indicator matching</p>
+                          </div>
+                        </div>
+                        <div className="flex items-start space-x-3 p-4 rounded-lg transition-all hover:shadow-sm" style={{ backgroundColor: 'var(--color-surface-alt)' }}>
+                          <div className="p-1 rounded-full mt-1" style={{ backgroundColor: 'var(--color-primary)' }}>
+                            <TrendingUp className="w-3 h-3 text-white" />
+                          </div>
+                          <div>
+                            <span className="font-semibold text-sm" style={{ color: 'var(--color-text-primary)' }}>Scalable:</span>
+                            <p className="text-sm" style={{ color: 'var(--color-text-primary)' }}>Easily expandable knowledge base with new schemes</p>
+                          </div>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -1251,23 +1386,26 @@ const AranyaFRASystem: React.FC = () => {
 
             <div className="p-6 space-y-6">
               <div>
-                <h3 className="text-lg font-bold mb-4" style={{color: 'var(--color-text-primary)'}}>Claimant Information</h3>
+                <h3 className="text-lg font-bold mb-4 flex items-center space-x-2" style={{color: 'var(--color-text-primary)'}}>
+                  <Users className="w-5 h-5" style={{color: 'var(--color-primary)'}} />
+                  <span>Claimant Information</span>
+                </h3>
                 <div className="grid grid-cols-2 gap-4">
-                  <div className="p-4 rounded-lg" style={{backgroundColor: 'var(--color-surface-muted)'}}>
-                    <p className="text-sm" style={{color: 'var(--color-text-secondary)'}}>Name</p>
-                    <p className="font-medium mt-1" style={{color: 'var(--color-text-primary)'}}>{selectedClaim.claimantName}</p>
+                  <div className="p-4 rounded-lg border-2 transition-all hover:shadow-sm" style={{backgroundColor: 'var(--color-surface)', borderColor: 'var(--color-border)'}}>
+                    <p className="text-sm font-semibold" style={{color: 'var(--color-text-secondary)'}}>Name</p>
+                    <p className="font-bold mt-1 text-lg" style={{color: 'var(--color-text-primary)'}}>{selectedClaim.claimantName}</p>
                   </div>
-                  <div className="p-4 rounded-lg" style={{backgroundColor: 'var(--color-surface-muted)'}}>
-                    <p className="text-sm" style={{color: 'var(--color-text-secondary)'}}>Village</p>
-                    <p className="font-medium mt-1" style={{color: 'var(--color-text-primary)'}}>{selectedClaim.village}</p>
+                  <div className="p-4 rounded-lg border-2 transition-all hover:shadow-sm" style={{backgroundColor: 'var(--color-surface)', borderColor: 'var(--color-border)'}}>
+                    <p className="text-sm font-semibold" style={{color: 'var(--color-text-secondary)'}}>Village</p>
+                    <p className="font-bold mt-1 text-lg" style={{color: 'var(--color-text-primary)'}}>{selectedClaim.village}</p>
                   </div>
-                  <div className="p-4 rounded-lg" style={{backgroundColor: 'var(--color-surface-muted)'}}>
-                    <p className="text-sm" style={{color: 'var(--color-text-secondary)'}}>Extent</p>
-                    <p className="font-medium mt-1" style={{color: 'var(--color-text-primary)'}}>{selectedClaim.extent} hectares</p>
+                  <div className="p-4 rounded-lg border-2 transition-all hover:shadow-sm" style={{backgroundColor: 'var(--color-surface)', borderColor: 'var(--color-border)'}}>
+                    <p className="text-sm font-semibold" style={{color: 'var(--color-text-secondary)'}}>Extent</p>
+                    <p className="font-bold mt-1 text-lg" style={{color: 'var(--color-text-primary)'}}>{selectedClaim.extent} hectares</p>
                   </div>
-                  <div className="p-4 rounded-lg" style={{backgroundColor: 'var(--color-surface-muted)'}}>
-                    <p className="text-sm" style={{color: 'var(--color-text-secondary)'}}>Status</p>
-                    <span className={`inline-flex items-center space-x-1 px-3 py-1 rounded-full text-xs font-medium mt-1 ${getStatusColor(selectedClaim.status)}`}>
+                  <div className="p-4 rounded-lg border-2 transition-all hover:shadow-sm" style={{backgroundColor: 'var(--color-surface)', borderColor: 'var(--color-border)'}}>
+                    <p className="text-sm font-semibold" style={{color: 'var(--color-text-secondary)'}}>Status</p>
+                    <span className={`inline-flex items-center space-x-1 px-3 py-1 rounded-full text-sm font-semibold mt-2 ${getStatusColor(selectedClaim.status)}`}>
                       {getStatusIcon(selectedClaim.status)}
                       <span className="capitalize">{selectedClaim.status}</span>
                     </span>
@@ -1276,20 +1414,30 @@ const AranyaFRASystem: React.FC = () => {
               </div>
 
               <div>
-                <h3 className="text-lg font-bold mb-4" style={{color: 'var(--color-text-primary)'}}>AI Validation Results</h3>
+                <h3 className="text-lg font-bold mb-4 flex items-center space-x-2" style={{color: 'var(--color-text-primary)'}}>
+                  <Brain className="w-5 h-5" style={{color: 'var(--color-primary)'}} />
+                  <span>AI Validation Results</span>
+                </h3>
                 <div className="space-y-3">
                   {Object.entries(selectedClaim.aiValidation).map(([key, value]) => (
-                    <div key={key} className="p-4 rounded-lg" style={{backgroundColor: 'var(--color-surface-muted)'}}>
-                      <div className="flex items-center justify-between mb-2">
-                        <p className="text-sm font-medium capitalize" style={{color: 'var(--color-text-secondary)'}}>{key.replace(/([A-Z])/g, ' $1').trim()}</p>
-                        <span className={`text-sm font-bold`} style={{color: value >= 90 ? 'var(--color-success)' : value >= 75 ? 'var(--color-warning)' : 'var(--color-danger)'}}>{value}%</span>
+                    <div key={key} className="p-4 rounded-lg border-2 transition-all hover:shadow-sm" style={{backgroundColor: 'var(--color-surface)', borderColor: 'var(--color-border)'}}>
+                      <div className="flex items-center justify-between mb-3">
+                        <p className="text-sm font-semibold capitalize" style={{color: 'var(--color-text-primary)'}}>{key.replace(/([A-Z])/g, ' $1').trim()} Match</p>
+                        <div className="flex items-center space-x-2">
+                          <span className={`text-lg font-bold`} style={{color: value >= 90 ? 'var(--color-success)' : value >= 75 ? 'var(--color-warning)' : 'var(--color-danger)'}}>{value}%</span>
+                          <div className="w-6 h-6 rounded-full flex items-center justify-center" style={{backgroundColor: value >= 90 ? 'var(--color-success-light)' : value >= 75 ? 'var(--color-warning-light)' : 'var(--color-danger-light)'}}>
+                            {value >= 90 ? <CheckCircle className="w-4 h-4" style={{color: 'var(--color-success)'}} /> : 
+                             value >= 75 ? <AlertTriangle className="w-4 h-4" style={{color: 'var(--color-warning)'}} /> : 
+                             <AlertCircle className="w-4 h-4" style={{color: 'var(--color-danger)'}} />}
+                          </div>
+                        </div>
                       </div>
-                      <div className="w-full rounded-full h-2" style={{backgroundColor: 'var(--color-border)'}}>
+                      <div className="w-full rounded-full h-3 overflow-hidden" style={{backgroundColor: 'var(--color-surface-muted)'}}>
                         <div
-                          className="h-2 rounded-full"
+                          className="h-3 rounded-full transition-all duration-500"
                           style={{ 
                             width: `${value}%`,
-                            backgroundColor: value >= 90 ? 'var(--color-success)' : value >= 75 ? 'var(--color-warning)' : 'var(--color-danger)'
+                            background: `linear-gradient(90deg, ${value >= 90 ? 'var(--color-success)' : value >= 75 ? 'var(--color-warning)' : 'var(--color-danger)'}, ${value >= 90 ? 'var(--color-success)' : value >= 75 ? 'var(--color-warning)' : 'var(--color-danger)'}90)`
                           }}
                         />
                       </div>
@@ -1299,50 +1447,75 @@ const AranyaFRASystem: React.FC = () => {
               </div>
 
               <div>
-                <h3 className="text-lg font-bold mb-4" style={{color: 'var(--color-text-primary)'}}>Submitted Documents</h3>
+                <h3 className="text-lg font-bold mb-4 flex items-center space-x-2" style={{color: 'var(--color-text-primary)'}}>
+                  <FileText className="w-5 h-5" style={{color: 'var(--color-primary)'}} />
+                  <span>Submitted Documents</span>
+                </h3>
                 <div className="grid grid-cols-2 gap-3">
                   {selectedClaim.documents.map((doc, idx) => (
-                    <div key={idx} className="flex items-center space-x-3 p-3 border rounded-lg hover:bg-opacity-80 transition" style={{borderColor: 'var(--color-border)', backgroundColor: 'var(--color-surface-muted)'}}>
-                      <FileText className="w-5 h-5" style={{color: 'var(--color-info)'}} />
-                      <span className="text-sm" style={{color: 'var(--color-text-primary)'}}>{doc}</span>
+                    <div key={idx} className="flex items-center space-x-3 p-4 border-2 rounded-lg hover:shadow-sm transition-all" style={{borderColor: 'var(--color-border)', backgroundColor: 'var(--color-surface)'}}>
+                      <div className="p-2 rounded-lg" style={{backgroundColor: 'var(--color-info-light)'}}>
+                        <FileText className="w-4 h-4" style={{color: 'var(--color-info)'}} />
+                      </div>
+                      <span className="text-sm font-semibold" style={{color: 'var(--color-text-primary)'}}>{doc}</span>
                     </div>
                   ))}
                 </div>
               </div>
 
               <div>
-                <h3 className="text-lg font-bold mb-4" style={{color: 'var(--color-text-primary)'}}>Geolocation</h3>
-                <div className="p-6 rounded-lg h-48 flex items-center justify-center" style={{backgroundColor: 'var(--color-info-light)'}}>
-                  <div className="text-center">
-                    <MapPin className="w-12 h-12 mx-auto mb-2" style={{color: 'var(--color-primary)'}} />
-                    <p className="text-sm font-medium" style={{color: 'var(--color-text-primary)'}}>Coordinates: {selectedClaim.lat}°N, {selectedClaim.lng}°E</p>
-                    <p className="text-xs mt-1" style={{color: 'var(--color-text-secondary)'}}>{selectedClaim.village} Village</p>
+                <h3 className="text-lg font-bold mb-4 flex items-center space-x-2" style={{color: 'var(--color-text-primary)'}}>
+                  <MapPin className="w-5 h-5" style={{color: 'var(--color-primary)'}} />
+                  <span>Geolocation</span>
+                </h3>
+                <div className="p-6 rounded-xl border-2 transition-all hover:shadow-md" style={{backgroundColor: 'var(--color-surface)', borderColor: 'var(--color-border)'}}>
+                  <div className="flex items-center space-x-4">
+                    <div className="p-4 rounded-xl" style={{backgroundColor: 'var(--color-primary-light)'}}>
+                      <MapPin className="w-8 h-8" style={{color: 'var(--color-primary)'}} />
+                    </div>
+                    <div className="flex-1">
+                      <div className="flex items-center space-x-2 mb-2">
+                        <span className="text-sm font-semibold" style={{color: 'var(--color-text-secondary)'}}>Coordinates:</span>
+                        <span className="text-lg font-bold" style={{color: 'var(--color-text-primary)'}}>{selectedClaim.lat}°N, {selectedClaim.lng}°E</span>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <div className="w-2 h-2 rounded-full" style={{backgroundColor: 'var(--color-success)'}}></div>
+                        <span className="text-base font-semibold" style={{color: 'var(--color-text-primary)'}}>{selectedClaim.village} Village</span>
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <div className="px-3 py-1 rounded-full text-xs font-semibold" style={{backgroundColor: 'var(--color-success-light)', color: 'var(--color-success)'}}>
+                        GPS Verified
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
 
-              <div className="flex items-center justify-end space-x-3 pt-4 border-t" style={{borderColor: 'var(--color-border)'}}>
+              <div className="flex items-center justify-end space-x-3 pt-6 border-t-2" style={{borderColor: 'var(--color-border)'}}>
                 <button
                   onClick={() => handleRequestMoreInfo(selectedClaim.id)}
-                  className="px-4 py-2 border rounded-lg transition font-medium hover:bg-opacity-80"
+                  className="flex items-center space-x-2 px-6 py-3 border-2 rounded-xl transition-all font-semibold hover:scale-105 hover:shadow-md"
                   style={{
-                    borderColor: 'var(--color-border)',
-                    color: 'var(--color-text-primary)',
-                    backgroundColor: 'var(--color-surface-muted)'
+                    borderColor: 'var(--color-warning)',
+                    color: 'var(--color-warning)',
+                    backgroundColor: 'var(--color-surface)'
                   }}
                 >
-                  Request More Info
+                  <AlertCircle className="w-4 h-4" />
+                  <span>Request More Info</span>
                 </button>
                 <button
                   onClick={() => handleRejectClaim(selectedClaim.id)}
-                  className="px-4 py-2 text-white rounded-lg transition font-medium hover:bg-opacity-90"
+                  className="flex items-center space-x-2 px-6 py-3 text-white rounded-xl transition-all font-semibold hover:scale-105 hover:shadow-lg"
                   style={{backgroundColor: 'var(--color-danger)'}}
                 >
-                  Reject Claim
+                  <XCircle className="w-4 h-4" />
+                  <span>Reject Claim</span>
                 </button>
                 <button
                   onClick={() => handleApproveClaim(selectedClaim.id)}
-                  className="px-4 py-2 text-white rounded-lg transition font-medium flex items-center space-x-2 hover:bg-opacity-90"
+                  className="flex items-center space-x-2 px-8 py-3 text-white rounded-xl transition-all font-semibold hover:scale-105 hover:shadow-lg"
                   style={{backgroundColor: 'var(--color-success)'}}
                 >
                   <CheckCircle className="w-4 h-4" />

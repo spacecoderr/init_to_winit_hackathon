@@ -320,36 +320,61 @@ const DashboardCharts: React.FC<DashboardChartsProps> = ({ claims }) => {
 
       {/* Summary Statistics */}
       <div 
-        className="col-span-1 lg:col-span-2 p-6 rounded-lg border"
-        style={{ backgroundColor: 'var(--color-info-light)', borderColor: 'var(--color-info-border)' }}
+        className="col-span-1 lg:col-span-2 p-8 rounded-xl border-2 transition-all hover:shadow-lg"
+        style={{ backgroundColor: 'var(--color-surface)', borderColor: 'var(--color-border)' }}
       >
-        <h3 className="font-bold text-lg mb-4" style={{ color: 'var(--color-info-text)' }}>
-          Key Performance Indicators
-        </h3>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <div className="text-center">
-            <p className="text-2xl font-bold" style={{ color: 'var(--color-success)' }}>
+        <div className="flex items-center space-x-3 mb-6">
+          <div className="p-2 rounded-lg" style={{ backgroundColor: 'var(--color-primary)' }}>
+            <BarChart3 className="w-6 h-6 text-white" />
+          </div>
+          <h3 className="font-bold text-xl" style={{ color: 'var(--color-text-primary)' }}>
+            Key Performance Indicators
+          </h3>
+        </div>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+          <div className="p-4 rounded-xl border-2 text-center transition-all hover:shadow-md" style={{ backgroundColor: 'var(--color-surface)', borderColor: 'var(--color-border)' }}>
+            <div className="flex items-center justify-center mb-2">
+              <div className="p-2 rounded-lg" style={{ backgroundColor: 'var(--color-success)' }}>
+                <Activity className="w-4 h-4 text-white" />
+              </div>
+            </div>
+            <p className="text-3xl font-bold mb-1" style={{ color: 'var(--color-success)' }}>
               {((statusStats.approved || 0) / claims.length * 100).toFixed(1)}%
             </p>
-            <p className="text-sm" style={{ color: 'var(--color-info-text)' }}>Approval Rate</p>
+            <p className="text-sm font-semibold" style={{ color: 'var(--color-text-primary)' }}>Approval Rate</p>
           </div>
-          <div className="text-center">
-            <p className="text-2xl font-bold" style={{ color: 'var(--color-primary)' }}>
+          <div className="p-4 rounded-xl border-2 text-center transition-all hover:shadow-md" style={{ backgroundColor: 'var(--color-surface)', borderColor: 'var(--color-border)' }}>
+            <div className="flex items-center justify-center mb-2">
+              <div className="p-2 rounded-lg" style={{ backgroundColor: 'var(--color-primary)' }}>
+                <PieChart className="w-4 h-4 text-white" />
+              </div>
+            </div>
+            <p className="text-3xl font-bold mb-1" style={{ color: 'var(--color-primary)' }}>
               {claims.reduce((sum, claim) => sum + claim.extent, 0).toFixed(0)}
             </p>
-            <p className="text-sm" style={{ color: 'var(--color-info-text)' }}>Total Hectares</p>
+            <p className="text-sm font-semibold" style={{ color: 'var(--color-text-primary)' }}>Total Hectares</p>
           </div>
-          <div className="text-center">
-            <p className="text-2xl font-bold" style={{ color: 'var(--color-warning)' }}>
+          <div className="p-4 rounded-xl border-2 text-center transition-all hover:shadow-md" style={{ backgroundColor: 'var(--color-surface)', borderColor: 'var(--color-border)' }}>
+            <div className="flex items-center justify-center mb-2">
+              <div className="p-2 rounded-lg" style={{ backgroundColor: 'var(--color-warning)' }}>
+                <TrendingUp className="w-4 h-4 text-white" />
+              </div>
+            </div>
+            <p className="text-3xl font-bold mb-1" style={{ color: 'var(--color-warning)' }}>
               {(claims.reduce((sum, claim) => sum + claim.extent, 0) / claims.length).toFixed(1)}
             </p>
-            <p className="text-sm" style={{ color: 'var(--color-info-text)' }}>Avg. Area (ha)</p>
+            <p className="text-sm font-semibold" style={{ color: 'var(--color-text-primary)' }}>Avg. Area (ha)</p>
           </div>
-          <div className="text-center">
-            <p className="text-2xl font-bold" style={{ color: 'var(--color-info)' }}>
+          <div className="p-4 rounded-xl border-2 text-center transition-all hover:shadow-md" style={{ backgroundColor: 'var(--color-surface)', borderColor: 'var(--color-border)' }}>
+            <div className="flex items-center justify-center mb-2">
+              <div className="p-2 rounded-lg" style={{ backgroundColor: 'var(--color-info)' }}>
+                <BarChart3 className="w-4 h-4 text-white" />
+              </div>
+            </div>
+            <p className="text-3xl font-bold mb-1" style={{ color: 'var(--color-info)' }}>
               {Object.keys(villageStats).length}
             </p>
-            <p className="text-sm" style={{ color: 'var(--color-info-text)' }}>Villages Covered</p>
+            <p className="text-sm font-semibold" style={{ color: 'var(--color-text-primary)' }}>Villages Covered</p>
           </div>
         </div>
       </div>

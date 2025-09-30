@@ -15,6 +15,25 @@ const AreaInfoPanel: React.FC<AreaInfoPanelProps> = ({ selectedArea, onClose }) 
   
   const area = selectedArea;
 
+  // Calculate actual active claims that overlap with this forest area
+  // In a real system, this would use spatial queries to find overlapping claims
+  const getActiveClaimsForArea = (area: ForestArea) => {
+    // Mock logic: simulate which claims might overlap with this forest area based on proximity
+    const mockClaimsInArea = [
+      { areaName: 'Tripura Protected Wildlife Sanctuary', claimIds: [1, 3] }, // Kakraban, Kanchanpur
+      { areaName: 'Community Forest Area - Kakraban', claimIds: [1, 2] }, // Kakraban, Ambassa  
+      { areaName: 'Tripura Reserved Forest - Sector A', claimIds: [4, 5] }, // Melaghar, Udaipur
+      { areaName: 'Reserve Forest - Ambassa Division', claimIds: [2, 3] }, // Ambassa, Kanchanpur
+    ];
+    
+    const areaData = mockClaimsInArea.find(item => 
+      area.name.includes(item.areaName.split(' - ')[0]) || 
+      item.areaName.includes(area.name.split(' - ')[0])
+    );
+    
+    return areaData ? areaData.claimIds.length : Math.min(2, Math.floor(area.area / 200));
+  };
+
   // Mock additional data for the selected area
   const additionalInfo = {
     establishedYear: area.type === 'protected' ? '1982' : area.type === 'reserve' ? '1975' : '1995',
@@ -23,7 +42,7 @@ const AreaInfoPanel: React.FC<AreaInfoPanelProps> = ({ selectedArea, onClose }) 
       flora: area.type === 'protected' ? 180 : area.type === 'reserve' ? 150 : 120,
     },
     threatsLevel: area.type === 'protected' ? 'Low' : area.type === 'reserve' ? 'Medium' : 'High',
-    activeClaims: Math.floor(area.area / 50) + Math.floor(Math.random() * 5),
+    activeClaims: getActiveClaimsForArea(area),
     lastSurvey: '2024-08-15',
     carbonStock: Math.floor(area.area * 2.5),
     soilType: area.area > 300 ? 'Laterite with clay' : area.area > 200 ? 'Sandy loam' : 'Clay loam',
@@ -153,15 +172,19 @@ const AreaInfoPanel: React.FC<AreaInfoPanelProps> = ({ selectedArea, onClose }) 
             <div 
               className="p-3 rounded-lg border"
               style={{ backgroundColor: 'var(--color-surface-muted)', borderColor: 'var(--color-border)' }}
+              title="FRA claims that overlap with or are within this forest area"
             >
               <div className="flex items-center space-x-2 mb-1">
                 <FileText className="w-4 h-4" style={{ color: 'var(--color-warning)' }} />
                 <span className="text-sm font-medium" style={{ color: 'var(--color-text-primary)' }}>
-                  Active Claims
+                  Active Schemes
                 </span>
               </div>
               <p className="text-lg font-bold" style={{ color: 'var(--color-warning)' }}>
                 {additionalInfo.activeClaims}
+              </p>
+              <p className="text-xs mt-1" style={{ color: 'var(--color-text-secondary)' }}>
+                Schemes within this area
               </p>
             </div>
           </div>

@@ -22,12 +22,15 @@
   --color-success: #059669;           /* Emerald 600 - success states */
   --color-success-light: #ecfdf5;     /* Emerald 50 - success bg */
   --color-success-text: #065f46;      /* Emerald 800 - success text */
+  --color-success-border: #d1fae5;    /* Emerald 100 - success border */
   --color-warning: #d97706;           /* Amber 600 - warning states */
   --color-warning-light: #fffbeb;     /* Amber 50 - warning bg */
   --color-warning-text: #92400e;      /* Amber 800 - warning text */
+  --color-warning-border: #fde68a;    /* Amber 200 - warning border */
   --color-danger: #dc2626;            /* Red 600 - error states */
   --color-danger-light: #fef2f2;      /* Red 50 - error bg */
   --color-danger-text: #991b1b;       /* Red 800 - danger text */
+  --color-danger-border: #fecaca;     /* Red 200 - danger border */
   --color-info: #0284c7;              /* Sky 600 - info states */
   --color-info-light: #f0f9ff;        /* Sky 50 - info bg */
   --color-info-text: #0c4a6e;         /* Sky 900 - info text */
